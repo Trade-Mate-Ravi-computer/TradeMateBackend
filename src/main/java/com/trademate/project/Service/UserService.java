@@ -25,10 +25,10 @@ public class UserService {
     public UserModel getByEmail(String email){
         return userRepository.findByEmail(email);
     }
-    public boolean setVerification(String email){
+    public String setVerification(String email){
         UserModel existingUser  = userRepository.findByEmail(email);
         existingUser.setVerified(true);
         userRepository.save(existingUser);
-        return true;
+        return " Your Email is Verified Go and login";
     }
 }

@@ -49,8 +49,8 @@ public UserModel addUser(@RequestBody UserModel user){
         return userService.addUser(user);
 }
 @GetMapping("/setverify/{email}")
-public void setVerification(@PathVariable String email){
-        userService.setVerification(email);
+public String setVerification(@PathVariable String email){
+       return userService.setVerification(email);
 }
   private void doAuthenticate(String email,String password){
       UsernamePasswordAuthenticationToken authentication =new UsernamePasswordAuthenticationToken(email,password);
