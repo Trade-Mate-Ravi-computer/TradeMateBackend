@@ -1,13 +1,13 @@
 package com.trademate.project.Controller;
 
 import com.trademate.project.Model.CustomerModel;
+import com.trademate.project.Repository.CustomerRepository;
 import com.trademate.project.Service.CustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @CrossOrigin(value = {"http://localhost:3000","https://trade-mate-pearl.vercel.app/"})
@@ -15,9 +15,24 @@ import org.springframework.web.bind.annotation.RestController;
 public class CustomerController {
     @Autowired
     private CustomerService customerService;
+    @Autowired
+    private CustomerRepository customerRepository;
 
     @PostMapping("/add")
-    public ResponseEntity<CustomerModel> addCust(CustomerModel customerModel){
+    public ResponseEntity<CustomerModel> addCust(@RequestBody CustomerModel customerModel){
         return customerService.addCust(customerModel);
+    }
+    @GetMapping("/byname/{name}")
+    public CustomerModel getByName(@PathVariable String name){
+        return customerRepository.findByCustomerName(name);
+    }
+    @GetMapping("/all")
+    public List<CustomerModel> getAll(){
+        return customerRepository.findAll();
+    }
+    @PostMapping("/bynamecompany")
+    public CustomerModel getBynameAndCompany(@RequestBody CustomerModel customer){
+//        System.out.println("customer name is"+customerService.getByNameAndCompanyName(customer.getCustomerName(),customer.getCompanyName()).getCustomerName());
+        return customerService.getByNameAndCompanyName(customer.getCustomerName(),customer.getCompanyName());
     }
 }

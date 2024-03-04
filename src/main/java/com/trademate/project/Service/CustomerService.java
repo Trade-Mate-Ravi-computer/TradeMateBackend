@@ -11,7 +11,14 @@ import org.springframework.stereotype.Service;
 public class CustomerService {
     @Autowired
     private CustomerRepository customerRepository;
+    @Autowired
+    private CompanyService companyService;
     public ResponseEntity<CustomerModel> addCust(CustomerModel customer){
+        System.out.println(customer.getCompanyName());
+        customer.getCompany().setCompanyId((companyService.getByName(customer.getCompanyName()).getCompanyId()));
         return new ResponseEntity<CustomerModel>(customerRepository.save(customer), HttpStatus.CREATED);
+    }
+    public CustomerModel getByNameAndCompanyName(String name,String companyName){
+        return customerRepository.findByCustomerNameAndCompanyName(name,companyName);
     }
 }

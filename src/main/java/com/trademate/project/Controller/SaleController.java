@@ -6,15 +6,19 @@ import com.trademate.project.Model.QuarterMonthModel;
 import com.trademate.project.Model.SaleModel;
 import com.trademate.project.Repository.SaleRepository;
 import com.trademate.project.Service.CompanyService;
+import com.trademate.project.Service.CustomerService;
 import com.trademate.project.Service.SaleService;
+import com.trademate.project.Service.StockItemService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @CrossOrigin(value = {"http://localhost:3000","https://trade-mate-pearl.vercel.app/"})
@@ -25,7 +29,10 @@ public class SaleController {
     private SaleRepository saleRepository;
     @Autowired
     private CompanyService companyService;
-
+    @Autowired
+    private CustomerService customerService;
+@Autowired
+private StockItemService stockItemService;
 
     public SaleController(SaleService saleService) {
         this.saleService = saleService;
@@ -34,7 +41,9 @@ public class SaleController {
     @PostMapping("/addSale")
     public ResponseEntity<SaleModel> addSale(@RequestBody SaleModel saleModel){
         saleModel.getItem().setItemName(saleModel.getItemName());
+        stockItemService.updateSaleQuantity(saleModel.getQuantity(),saleModel.getItemName());
         saleModel.getCompany().setCompanyId(companyService.getByName(saleModel.getCompanyName()).getCompanyId());
+        saleModel.getCustomer().setId(customerService.getByNameAndCompanyName(saleModel.getCustomerName(),saleModel.getCompanyName()).getId());
          return  new ResponseEntity<SaleModel>(saleService.addSale(saleModel), HttpStatus.CREATED);
     }
     @PostMapping("/allsaledetails")
@@ -52,6 +61,13 @@ public class SaleController {
     }
     @DeleteMapping("/delete/{id}")
     public  String deleteSale(@PathVariable long id ){
+        Optional<SaleModel> existingSaleOptional = saleRepository.findById(id);
+        existingSaleOptional.ifPresentOrElse(existingSale -> {
+            stockItemService.updateQuantity(existingSale.getQuantity(), existingSale.getItemName());
+        }, () -> {
+            throw new UsernameNotFoundException("Sale not found with id: " + id);
+        });
+
         return saleService.deleteSale(id);
     }
 

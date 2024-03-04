@@ -34,4 +34,5 @@ public interface SaleRepository extends JpaRepository<SaleModel, Long> {
     @Query("SELECT MIN(s.date) FROM SaleModel s WHERE s.companyName = ?1")
     LocalDate findMinDate(String companyName);
 
+
 }

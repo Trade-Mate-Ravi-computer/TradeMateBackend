@@ -5,6 +5,7 @@ import com.trademate.project.Model.StockItemModel;
 import com.trademate.project.Repository.PurchaseRepository;
 import com.trademate.project.Service.CompanyService;
 import com.trademate.project.Service.PurchaseService;
+import com.trademate.project.Service.SellerService;
 import com.trademate.project.Service.StockItemService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -24,31 +25,19 @@ private CompanyService companyService;
 private StockItemService stockItemService;
 @Autowired
 private PurchaseRepository purchaseRepository;
+@Autowired
+private SellerService sellerService;
     @PostMapping("/add")
     public ResponseEntity<PurchaseModel> addPurchase(@RequestBody PurchaseModel purchase){
-        if(stockItemService.getByName(purchase.getItem())!=null){
             stockItemService.updateItem(purchase.getPrice(),purchase.getItemName());
+            stockItemService.updateQuantity(purchase.getQuantity(),purchase.getItemName());
             purchase.setTotalAmmount(purchase.getPrice()*purchase.getQuantity());
+            purchase.setGstInRupee((float)purchase.getTotalAmmount()*stockItemService.getByName(purchase.getItemName()).getGstInPercent()/(100+stockItemService.getByName(purchase.getItemName()).getGstInPercent()));
             purchase.setRemaining((purchase.getPrice()*purchase.getQuantity())-purchase.getPaidAmmount());
             purchase.getCompany().setCompanyId(companyService.getByName(purchase.getCompanyName()).getCompanyId());
             purchase.getItem().setItemName(purchase.getItemName());
+            purchase.getSeller().setId(sellerService.getByNameAndCompany(purchase.getSellerName(),purchase.getCompanyName()).getId());
             return purchaseService.addPurchase(purchase);
-        }else{
-            StockItemModel newStock=new StockItemModel();
-            newStock.setItemName(purchase.getItemName());
-            newStock.setPurchasePrice(purchase.getPrice());
-            newStock.setCategory(null);
-            newStock.setCompanyName(purchase.getCompanyName());
-            newStock.setCompany(companyService.getByName(purchase.getCompanyName()));
-            stockItemService.addStock(newStock);
-            stockItemService.updateItem(purchase.getPrice(),purchase.getItemName());
-            purchase.setTotalAmmount(purchase.getPrice()*purchase.getQuantity());
-            purchase.setRemaining((purchase.getPrice()*purchase.getQuantity())-purchase.getPaidAmmount());
-            purchase.getCompany().setCompanyId(companyService.getByName(purchase.getCompanyName()).getCompanyId());
-            purchase.getItem().setItemName(purchase.getItemName());
-            return purchaseService.addPurchase(purchase);
-        }
-
     }
     @PostMapping("/getbycompany")
     public List<PurchaseModel> getByCompany(@RequestBody PurchaseModel purchase){

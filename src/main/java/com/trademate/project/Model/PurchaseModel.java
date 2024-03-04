@@ -26,6 +26,7 @@ public class PurchaseModel {
     private int quantity;
     private int totalAmmount;
     private int paidAmmount;
+    private double gstInRupee;
     private int remaining;
     private String companyName;
     private String sellerName;
@@ -33,4 +34,6 @@ public class PurchaseModel {
     private StockItemModel item;
     @ManyToOne
     private CompanyModel company;
+    @ManyToOne
+    private SellerModel seller;
 }

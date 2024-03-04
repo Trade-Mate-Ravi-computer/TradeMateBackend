@@ -15,6 +15,8 @@ public class SaleService {
     private SaleRepository saleRepository;
     @Autowired
     private StockItemService stockItemService;
+    @Autowired
+    private CompanyService companyService;
 
     public SaleService(SaleRepository saleRepository) {
         this.saleRepository = saleRepository;
@@ -24,7 +26,14 @@ public class SaleService {
     public SaleModel addSale(SaleModel saleModel){
         saleModel.setTotalAmmount(saleModel.getQuantity()*saleModel.getRate());
         saleModel.setRemaining(saleModel.getTotalAmmount()-saleModel.getReceivedAmmount());
-        int pr = saleModel.getTotalAmmount()-saleModel.getQuantity()*(stockItemService.getByName(saleModel.getItem()).getPurchasePrice());
+       if(companyService.getByName(saleModel.getCompanyName()).getGstType()=="Regular"){
+           float gst= (saleModel.getTotalAmmount()-((float)saleModel.getTotalAmmount()*100)/(100+stockItemService.getByName(saleModel.getItemName()).getGstInPercent()));
+           saleModel.setGstInRupee(gst);
+       }else{
+           saleModel.setGstInRupee((float)saleModel.getTotalAmmount()/100);
+       }
+        System.out.println("Gst in Rupees "+(saleModel.getTotalAmmount()*100)/(100+stockItemService.getByName(saleModel.getItemName()).getGstInPercent()));
+        int pr = saleModel.getTotalAmmount()-saleModel.getQuantity()*(stockItemService.getByName(saleModel.getItemName()).getPurchasePrice());
         saleModel.setProfit(pr);
         return saleRepository.save(saleModel);
     }

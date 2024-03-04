@@ -22,9 +22,14 @@ public class StockItemModel {
     private int purchasePrice;
     private String category;
     private String companyName;
+    private int gstInPercent;
+    private int quantity;
     @ManyToOne
     private CompanyModel company;
     @OneToMany(mappedBy = "item")
     @JsonIgnore
     private List<PurchaseModel> purchaseList;
+    @OneToMany(mappedBy = "item")
+    @JsonIgnore
+    private List<SaleModel> saleList;
 }

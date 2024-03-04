@@ -62,6 +62,12 @@ public class CompanyController {
         if(company.getGstType().length()>1){
             existingCompany.setGstType(company.getGstType());
         }
+        if(company.getState().length()>1){
+            existingCompany.setState(company.getState());
+        }
+        if(company.getCountry().length()>1){
+            existingCompany.setCountry(company.getCountry());
+        }
         return companyService.updateCompany(existingCompany);
     }
 }

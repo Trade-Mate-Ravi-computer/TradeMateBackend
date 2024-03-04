@@ -9,32 +9,20 @@ import lombok.Setter;
 import java.time.LocalDate;
 
 @Entity
-@Getter
 @Setter
+@Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name="Sales Detail")
-public class SaleModel {
+@Table(name = "expense")
+public class ExpenseModel {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
-    @ManyToOne
-    private StockItemModel item;
-    private String customerName;
-    private int quantity;
+    private String name;
+    private String expenseOn;
     private LocalDate date;
-    private int rate;
-    private int receivedAmmount;
-    private double gstInRupee;
-    private int totalAmmount;
-    private int remaining;
-    private int profit;
-    private String itemName;
+    private int amount;
     private String companyName;
     @ManyToOne
     private CompanyModel company;
-    @ManyToOne
-    private CustomerModel customer;
-
-
 }

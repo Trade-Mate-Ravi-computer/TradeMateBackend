@@ -23,14 +23,27 @@ public class StockItemService {
     public List<StockItemModel> getAll(){
         return stockItemRepository.findAll();
     }
-    public StockItemModel getByName(StockItemModel item){
-        return stockItemRepository.findByItemName(item.getItemName());
+    public StockItemModel getByName(String item){
+        return stockItemRepository.findByItemName(item);
     }
     public String updateItem(int price,String itemName ){
         StockItemModel existingItem = stockItemRepository.findByItemName(itemName);
-        System.out.println(itemName);
         existingItem.setPurchasePrice(price);
         stockItemRepository.save(existingItem);
         return "Updated";
     }
+    public void updateQuantity(int quantity, String itemName) {
+        StockItemModel existingItem = stockItemRepository.findByItemName(itemName);
+        int newQuantity = existingItem.getQuantity() + quantity;
+        existingItem.setQuantity(newQuantity); // Add quantity to existing quantity
+        System.out.println("Hello"+newQuantity);
+        stockItemRepository.save(existingItem);
+    }
+    public void updateSaleQuantity(int quantity, String itemName) {
+        StockItemModel existingItem = stockItemRepository.findByItemName(itemName);
+        int newQuantity = existingItem.getQuantity()-quantity;
+        existingItem.setQuantity(newQuantity); // Add quantity to existing quantity
+        stockItemRepository.save(existingItem);
+    }
+
 }
