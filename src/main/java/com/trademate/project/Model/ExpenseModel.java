@@ -23,6 +23,7 @@ public class ExpenseModel {
     private LocalDate date;
     private int amount;
     private String companyName;
+    private String email;
     @ManyToOne
     private CompanyModel company;
 }

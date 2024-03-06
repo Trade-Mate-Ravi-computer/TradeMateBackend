@@ -19,7 +19,7 @@ public class ExpenseContorller {
 private CompanyService companyService;
     @PostMapping("/add")
     public ResponseEntity<ExpenseModel> add(@RequestBody ExpenseModel expense){
-        expense.getCompany().setCompanyId(companyService.getByName(expense.getCompanyName()).getCompanyId());
+        expense.getCompany().setCompanyId(companyService.getByCompanyNameAndEmail(expense.getCompanyName(),expense.getEmail()).getCompanyId());
         return service.add(expense);
     }
     @GetMapping("/all")
