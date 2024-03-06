@@ -22,6 +22,7 @@ public class StockItemModel {
     private int purchasePrice;
     private String category;
     private String companyName;
+    private String email;
     private int gstInPercent;
     private int quantity;
     @ManyToOne

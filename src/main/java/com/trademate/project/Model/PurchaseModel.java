@@ -29,6 +29,7 @@ public class PurchaseModel {
     private double gstInRupee;
     private int remaining;
     private String companyName;
+    private String email;
     private String sellerName;
     @ManyToOne
     private StockItemModel item;

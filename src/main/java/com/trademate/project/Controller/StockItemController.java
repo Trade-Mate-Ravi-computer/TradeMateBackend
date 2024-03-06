@@ -24,7 +24,7 @@ private CompanyRepository companyRepository;
         @PostMapping("/add")
     public ResponseEntity<StockItemModel> addStock(@RequestBody StockItemModel item){
             item.setItemName(item.getItemName().trim().replaceAll("/","-"));
-            item.getCompany().setCompanyId(companyRepository.findByCompanyName(item.getCompanyName()).getCompanyId());
+            item.getCompany().setCompanyId(companyRepository.findByCompanyNameAndEmail(item.getCompanyName(),item.getEmail()).getCompanyId());
         return service.addStock(item);
     }
     @PostMapping("/all")

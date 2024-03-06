@@ -42,7 +42,7 @@ private StockItemService stockItemService;
     public ResponseEntity<SaleModel> addSale(@RequestBody SaleModel saleModel){
         saleModel.getItem().setItemName(saleModel.getItemName());
         stockItemService.updateSaleQuantity(saleModel.getQuantity(),saleModel.getItemName());
-        saleModel.getCompany().setCompanyId(companyService.getByName(saleModel.getCompanyName()).getCompanyId());
+        saleModel.getCompany().setCompanyId(companyService.getByCompanyNameAndEmail(saleModel.getCompanyName(),saleModel.getEmail()).getCompanyId());
         saleModel.getCustomer().setId(customerService.getByNameAndCompanyName(saleModel.getCustomerName(),saleModel.getCompanyName()).getId());
          return  new ResponseEntity<SaleModel>(saleService.addSale(saleModel), HttpStatus.CREATED);
     }

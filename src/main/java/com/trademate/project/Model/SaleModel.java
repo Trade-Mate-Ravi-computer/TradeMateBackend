@@ -30,6 +30,7 @@ public class SaleModel {
     private int remaining;
     private int profit;
     private String itemName;
+    private String email;
     private String companyName;
     @ManyToOne
     private CompanyModel company;

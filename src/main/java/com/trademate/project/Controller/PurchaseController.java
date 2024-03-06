@@ -34,7 +34,7 @@ private SellerService sellerService;
             purchase.setTotalAmmount(purchase.getPrice()*purchase.getQuantity());
             purchase.setGstInRupee((float)purchase.getTotalAmmount()*stockItemService.getByName(purchase.getItemName()).getGstInPercent()/(100+stockItemService.getByName(purchase.getItemName()).getGstInPercent()));
             purchase.setRemaining((purchase.getPrice()*purchase.getQuantity())-purchase.getPaidAmmount());
-            purchase.getCompany().setCompanyId(companyService.getByName(purchase.getCompanyName()).getCompanyId());
+            purchase.getCompany().setCompanyId(companyService.getByCompanyNameAndEmail(purchase.getCompanyName(),purchase.getEmail()).getCompanyId());
             purchase.getItem().setItemName(purchase.getItemName());
             purchase.getSeller().setId(sellerService.getByNameAndCompany(purchase.getSellerName(),purchase.getCompanyName()).getId());
             return purchaseService.addPurchase(purchase);
