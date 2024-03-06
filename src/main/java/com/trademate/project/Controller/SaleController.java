@@ -30,8 +30,7 @@ public class SaleController {
     private SaleBackupService saleBackupService;
 @Autowired
 private StockItemService stockItemService;
-@Autowired
-private EmailService emailService;
+
 
     public SaleController(SaleService saleService) {
         this.saleService = saleService;
@@ -43,9 +42,6 @@ private EmailService emailService;
         stockItemService.updateSaleQuantity(saleModel.getQuantity(),saleModel.getItemName());
         saleModel.getCompany().setCompanyId(companyService.getByCompanyNameAndEmail(saleModel.getCompanyName(),saleModel.getEmail()).getCompanyId());
         saleModel.getCustomer().setId(customerService.getByNameAndCompanyName(saleModel.getCustomerName(),saleModel.getCompanyName()).getId());
-        String subject="Verify Your Email !";
-        String message="You are successfully registered to TradeMate Click the link to verify your account "+"Verification Link"+"https://tradematebackend-production.up.railway.app/auth/setverify/"+saleModel.getEmail();
-        emailService.sendEmail(saleModel.getEmail(),subject,message);
          return  new ResponseEntity<SaleModel>(saleService.addSale(saleModel), HttpStatus.CREATED);
     }
     @PostMapping("/allsaledetails")
