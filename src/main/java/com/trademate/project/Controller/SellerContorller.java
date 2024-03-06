@@ -22,8 +22,8 @@ public class SellerContorller {
     private SellerRepository sellerRepository;
 
     @PostMapping("/add")
-    public ResponseEntity<SellerModel> addSalew(@RequestBody SellerModel seller){
-        seller.getCompany().setCompanyId(companyService.getByName(seller.getCompanyName()).getCompanyId());
+    public ResponseEntity<SellerModel> addSale(@RequestBody SellerModel seller){
+        seller.getCompany().setCompanyId(companyService.getByCompanyNameAndEmail(seller.getCompanyName(),seller.getEmail()).getCompanyId());
         return service.addSale(seller);
     }
     @GetMapping("/byname/{name}")

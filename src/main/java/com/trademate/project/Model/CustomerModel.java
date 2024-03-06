@@ -25,6 +25,7 @@ public class CustomerModel {
     private String customerName;
     private String address;
     private String companyName;
+    private String email;
     private String state;
     private String country;
     private int pinCode;

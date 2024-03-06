@@ -48,7 +48,6 @@ private StockItemService stockItemService;
     }
     @PostMapping("/allsaledetails")
     public List<SaleModel> getAllSale(@RequestBody DateModel date){
-        System.out.println(date.getCompanyName());
         return saleRepository.findAllByCompanyName(date.getCompanyName());
     }
     @GetMapping("/{id}")

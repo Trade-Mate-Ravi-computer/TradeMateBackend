@@ -35,6 +35,7 @@ public class SellerModel {
     private String gstIn;
     private String gstType;
     private long mobile;
+    private String email;
     @ManyToOne
     private CompanyModel company;
     @OneToMany(mappedBy ="seller")

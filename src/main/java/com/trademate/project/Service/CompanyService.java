@@ -34,5 +34,7 @@ public class CompanyService {
     public CompanyModel getByCompanyId(long id){
         return companyRepository.findByCompanyId(id);
     }
-
+public CompanyModel getByCompanyNameAndEmail(String cname,String email){
+        return companyRepository.findByCompanyNameAndEmail(cname,email);
+}
 }
