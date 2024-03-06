@@ -22,7 +22,7 @@ public class UserService {
     }
     public UserModel addUser(UserModel userModel){
         userModel.setPassword(passwordEncoder.encode(userModel.getPassword()));
-        if(userRepository.findByEmail(userModel.getEmail())!=null){
+        if(userRepository.findByEmail(userModel.getEmail())==null){
             String subject="Verify Your Email !";
             String message="You are successfully registered to TradeMate Click the link to verify your account "+"Verification Link"+"https://tradematebackend-production.up.railway.app/auth/setverify/"+userModel.getEmail();
             emailService.sendEmail(userModel.getEmail(),subject,message);
