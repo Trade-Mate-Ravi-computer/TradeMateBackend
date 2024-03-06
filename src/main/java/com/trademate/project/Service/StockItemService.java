@@ -17,7 +17,6 @@ public class StockItemService {
     private CompanyService companyService;
 
     public ResponseEntity<StockItemModel> addStock(StockItemModel item){
-        item.getCompany().setCompanyId(companyService.getByName(item.getCompanyName()).getCompanyId());
         return new ResponseEntity<StockItemModel>(stockItemRepository.save(item), HttpStatus.CREATED);
     }
     public List<StockItemModel> getAll(){
