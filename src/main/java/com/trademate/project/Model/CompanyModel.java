@@ -39,6 +39,9 @@ public class CompanyModel {
     private List<SaleModel> sale;
     @OneToMany(mappedBy = "company")
     @JsonIgnore
+    private List<SaleBackupModel> saleBackup;
+    @OneToMany(mappedBy = "company")
+    @JsonIgnore
     private List<StockItemModel> stockItem;
     @OneToMany(mappedBy = "company")
     @JsonIgnore

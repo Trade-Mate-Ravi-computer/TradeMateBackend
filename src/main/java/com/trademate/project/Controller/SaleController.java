@@ -1,11 +1,9 @@
 package com.trademate.project.Controller;
 
 import com.trademate.project.Model.*;
+import com.trademate.project.Repository.SaleBackupRepository;
 import com.trademate.project.Repository.SaleRepository;
-import com.trademate.project.Service.CompanyService;
-import com.trademate.project.Service.CustomerService;
-import com.trademate.project.Service.SaleService;
-import com.trademate.project.Service.StockItemService;
+import com.trademate.project.Service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,6 +26,8 @@ public class SaleController {
     private CompanyService companyService;
     @Autowired
     private CustomerService customerService;
+    @Autowired
+    private SaleBackupService saleBackupService;
 @Autowired
 private StockItemService stockItemService;
 
@@ -56,16 +56,18 @@ private StockItemService stockItemService;
         return saleService.updateSales(saleModel,id);
     }
     @DeleteMapping("/delete/{id}")
-    public  String deleteSale(@PathVariable long id ){
+    public String deleteSale(@PathVariable long id) {
         Optional<SaleModel> existingSaleOptional = saleRepository.findById(id);
         existingSaleOptional.ifPresentOrElse(existingSale -> {
+           saleBackupService.add(existingSale);
             stockItemService.updateQuantity(existingSale.getQuantity(), existingSale.getItemName());
         }, () -> {
-            throw new UsernameNotFoundException("Sale not found with id: " + id);
+            throw new RuntimeException("Sale not found with id: " + id);
         });
 
         return saleService.deleteSale(id);
     }
+
 
     @PostMapping("/profit")
     public Object getProfit(@RequestBody DateModel intDate) {
