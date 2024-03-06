@@ -20,7 +20,6 @@ public class CustomerController {
 
     @PostMapping("/add")
     public ResponseEntity<CustomerModel> addCust(@RequestBody CustomerModel customerModel){
-        customerModel.getCompany().setCompanyId(customerService.getByNameAndCompanyName(customerModel.getCompanyName(),customerModel.getEmail()).getId());
         return customerService.addCust(customerModel);
     }
     @GetMapping("/byname/{name}")

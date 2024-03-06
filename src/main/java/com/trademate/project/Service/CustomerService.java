@@ -14,8 +14,7 @@ public class CustomerService {
     @Autowired
     private CompanyService companyService;
     public ResponseEntity<CustomerModel> addCust(CustomerModel customer){
-        System.out.println(customer.getCompanyName());
-        customer.getCompany().setCompanyId((companyService.getByName(customer.getCompanyName()).getCompanyId()));
+        customer.getCompany().setCompanyId((companyService.getByCompanyNameAndEmail(customer.getCompanyName(),customer.getEmail()).getCompanyId()));
         return new ResponseEntity<CustomerModel>(customerRepository.save(customer), HttpStatus.CREATED);
     }
     public CustomerModel getByNameAndCompanyName(String name,String companyName){
