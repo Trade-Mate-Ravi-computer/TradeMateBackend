@@ -12,17 +12,17 @@ public interface SaleRepository extends JpaRepository<SaleModel, Long> {
     @Query("select s from SaleModel s where companyName=?1")
     List<SaleModel> findAllByCompanyName(String companyName);
     List<SaleModel> findByCustomerName(String customerName);
-   @Query("select sum(s.profit) as sumOfProfit,sum(s.remaining) as sumOfRemaining,sum(s.totalAmmount) as sumOfTotalAmmount from SaleModel s where month(s.date)=?1 and year(s.date)=?2 and companyName=?3")
-   Map<String,Integer> sumOfRemainingByMonth(int month,int year,String companyName);
-    @Query("select sum(s.profit) as sumOfProfit,sum(s.remaining) as sumOfRemaining,sum(s.totalAmmount) as sumOfTotalAmmount from SaleModel s where year(s.date)=?1 and companyName=?2")
-    Map<String,Integer> sumOfRemainingByYear(int year,String companyName);
+   @Query("select sum(s.profit) as sumOfProfit,sum(s.remaining) as sumOfRemaining,sum(s.totalAmmount) as sumOfTotalAmmount from SaleModel s where month(s.date)=?1 and year(s.date)=?2 and companyName=?3 and email=?4")
+   Map<String,Integer> sumOfRemainingByMonth(int month,int year,String companyName,String email);
+    @Query("select sum(s.profit) as sumOfProfit,sum(s.remaining) as sumOfRemaining,sum(s.totalAmmount) as sumOfTotalAmmount from SaleModel s where year(s.date)=?1 and companyName=?2 and email=?3")
+    Map<String,Integer> sumOfRemainingByYear(int year,String companyName,String email);
 
    @Query("Select sum(s.remaining) from SaleModel s where customerName = ?1")
    int sumOfTotalRemainingByCustomer(String customerName);
    @Query("select s from SaleModel s where remaining>0")
     List<SaleModel> salesWithRemainingBalance();
-    @Query("select sum(s.profit) as sumOfProfit, sum(s.remaining) as sumOfRemaining, sum(s.totalAmmount) as sumOfTotalAmmount from SaleModel s where companyName = ?1")
-    Map<String,Integer> sumOfTotalRemaining(String companyName);
+    @Query("select sum(s.profit) as sumOfProfit, sum(s.remaining) as sumOfRemaining, sum(s.totalAmmount) as sumOfTotalAmmount from SaleModel s where companyName = ?1 and email=?2")
+    Map<String,Integer> sumOfTotalRemaining(String companyName,String email);
     @Query("select s from SaleModel s where customerName = ?1 and date = ?2 and email=?3")
     List<SaleModel> findByNameAndDate(String name, LocalDate date,String email);
     @Query("select sum(s.totalAmmount) as summOfTotalAmmount from SaleModel s where (month(s.date) = ?1 and year(s.date) = ?4 and companyName=?5 and email=?6) or (month(s.date) = ?2 and year(s.date) = ?4 and companyName=?5 and email=?6) or (month(s.date) = ?3 and year(s.date) = ?4  and companyName=?5 and email=?6)")

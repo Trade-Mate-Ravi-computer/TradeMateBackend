@@ -70,8 +70,7 @@ private StockItemService stockItemService;
     @PostMapping("/profit")
     public Object getProfit(@RequestBody DateModel intDate) {
        Date date = new Date(intDate.getYear(),intDate.getMonth(),intDate.getDay());
-//        System.out.println(intDate.getDay()+","+intDate.getYear()+","+intDate.getMonth());
-        return saleService.sumOfProfits(date.getMonth(),date.getYear(),intDate.getCompanyName());
+        return saleService.sumOfProfits(date.getMonth(),date.getYear(),intDate.getCompanyName(),intDate.getEmail());
     }
     @PostMapping("/bycname")
     public List<SaleModel> getByCustomerName(@RequestBody String customerName){
@@ -87,12 +86,12 @@ private StockItemService stockItemService;
     }
     @PostMapping("/totalsum")
     public Object sumOfTotal(@RequestBody DateModel intDate){
-        return saleRepository.sumOfTotalRemaining(intDate.getCompanyName());
+        return saleRepository.sumOfTotalRemaining(intDate.getCompanyName(),intDate.getEmail());
     }
     @PostMapping("/byyear")
     public Object sumOfprofitByYear(@RequestBody DateModel intDate){
         Date date = new Date(intDate.getYear(),intDate.getMonth(),intDate.getDay());
-        return saleRepository.sumOfRemainingByYear(date.getYear(),intDate.getCompanyName());
+        return saleRepository.sumOfRemainingByYear(date.getYear(),intDate.getCompanyName(),intDate.getEmail());
     }
     @PostMapping("/byid/{id}")
     public List<SaleModel> findById(@PathVariable long id){

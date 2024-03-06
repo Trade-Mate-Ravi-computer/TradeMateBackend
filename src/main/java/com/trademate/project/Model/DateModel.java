@@ -16,4 +16,5 @@ public class DateModel {
     private int month;
     private int day;
     private String companyName;
+    private String email;
 }

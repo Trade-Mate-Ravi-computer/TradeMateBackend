@@ -54,8 +54,8 @@ public class SaleService {
         saleRepository.deleteById(id);
         return  "Deleted";
     }
-    public Object sumOfProfits(int month,int year,String companyName){
-        return saleRepository.sumOfRemainingByMonth(month,year,companyName);
+    public Object sumOfProfits(int month,int year,String companyName,String email){
+        return saleRepository.sumOfRemainingByMonth(month,year,companyName,email);
     }
     public List<SaleModel> getByCustomerName(String customerName){
         return saleRepository.findByCustomerName(customerName);
