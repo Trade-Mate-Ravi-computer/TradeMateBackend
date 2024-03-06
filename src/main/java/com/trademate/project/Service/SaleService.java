@@ -26,13 +26,12 @@ public class SaleService {
     public SaleModel addSale(SaleModel saleModel){
         saleModel.setTotalAmmount(saleModel.getQuantity()*saleModel.getRate());
         saleModel.setRemaining(saleModel.getTotalAmmount()-saleModel.getReceivedAmmount());
-       if(companyService.getByName(saleModel.getCompanyName()).getGstType()=="Regular"){
+       if(companyService.getByCompanyNameAndEmail(saleModel.getCompanyName(),saleModel.getEmail()).getGstType()=="Regular"){
            float gst= (saleModel.getTotalAmmount()-((float)saleModel.getTotalAmmount()*100)/(100+stockItemService.getByName(saleModel.getItemName()).getGstInPercent()));
            saleModel.setGstInRupee(gst);
        }else{
            saleModel.setGstInRupee((float)saleModel.getTotalAmmount()/100);
        }
-        System.out.println("Gst in Rupees "+(saleModel.getTotalAmmount()*100)/(100+stockItemService.getByName(saleModel.getItemName()).getGstInPercent()));
         int pr = saleModel.getTotalAmmount()-saleModel.getQuantity()*(stockItemService.getByName(saleModel.getItemName()).getPurchasePrice());
         saleModel.setProfit(pr);
         return saleRepository.save(saleModel);

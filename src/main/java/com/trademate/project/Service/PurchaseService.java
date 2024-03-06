@@ -16,7 +16,6 @@ public class PurchaseService {
     @Autowired
     private CompanyService companyService;
     public ResponseEntity<PurchaseModel> addPurchase(PurchaseModel purchase){
-        purchase.getCompany().setCompanyId(companyService.getByName(purchase.getCompanyName()).getCompanyId());
         return  new ResponseEntity<PurchaseModel>(purchaseRepository.save(purchase), HttpStatus.CREATED);
     }
     public List<PurchaseModel> getByCompanyName(String companyName){
