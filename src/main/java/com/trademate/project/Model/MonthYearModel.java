@@ -13,4 +13,5 @@ public class MonthYearModel {
     private int month;
     private int year;
     private String companyName;
+    private String email;
 }

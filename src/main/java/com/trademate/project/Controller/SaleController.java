@@ -1,9 +1,6 @@
 package com.trademate.project.Controller;
 
-import com.trademate.project.Model.DateModel;
-import com.trademate.project.Model.MonthYearModel;
-import com.trademate.project.Model.QuarterMonthModel;
-import com.trademate.project.Model.SaleModel;
+import com.trademate.project.Model.*;
 import com.trademate.project.Repository.SaleRepository;
 import com.trademate.project.Service.CompanyService;
 import com.trademate.project.Service.CustomerService;
@@ -109,8 +106,8 @@ private StockItemService stockItemService;
     public  int totalAmmountOfMonth(@RequestBody MonthYearModel monthYearModel){
         return saleService.totalAmmountOfMonth(monthYearModel);
     }
-    @GetMapping("/date/{companyName}")
-    public LocalDate getMinDate(@PathVariable String companyName){
-        return saleRepository.findMinDate(companyName);
+    @PostMapping("/date")
+    public LocalDate getMinDate(@RequestBody StockItemModel stock){
+        return saleRepository.findMinDate(stock.getCompanyName(),stock.getEmail());
     }
 }

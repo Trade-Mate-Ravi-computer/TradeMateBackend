@@ -15,4 +15,5 @@ public class QuarterMonthModel {
     private int month3;
     private int year;
     private String companyName;
+    private String email;
 }
