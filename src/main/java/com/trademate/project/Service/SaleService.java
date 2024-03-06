@@ -68,7 +68,7 @@ public class SaleService {
     }
     public List<SaleModel> grtById(long id){
        SaleModel sale = saleRepository.findById(id).orElseThrow(()->new UsernameNotFoundException("Not Found"));
-        return saleRepository.findByNameAndDate(sale.getCustomerName(),sale.getDate());
+        return saleRepository.findByNameAndDate(sale.getCustomerName(),sale.getDate(),sale.getEmail());
     }
     public  int totalAmmountOfQuarter(QuarterMonthModel monthModel){
         return saleRepository.sumOfTotalAmountOfQuarter(monthModel.getMonth1(),monthModel.getMonth2(),monthModel.getMonth3(),monthModel.getYear(),monthModel.getCompanyName(),monthModel.getEmail());
