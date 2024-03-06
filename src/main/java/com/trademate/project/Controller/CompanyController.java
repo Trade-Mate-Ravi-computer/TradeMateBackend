@@ -70,4 +70,8 @@ public class CompanyController {
         }
         return companyService.updateCompany(existingCompany);
     }
+    @PostMapping("/companyByNameEmail")
+    public CompanyModel getCompanyByNameEmail(@RequestBody CompanyModel company){
+        return companyService.getByCompanyNameAndEmail(company.getCompanyName(),company.getEmail());
+    }
 }

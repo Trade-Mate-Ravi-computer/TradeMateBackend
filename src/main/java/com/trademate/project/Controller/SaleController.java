@@ -108,6 +108,7 @@ private StockItemService stockItemService;
     }
     @PostMapping("/date")
     public LocalDate getMinDate(@RequestBody StockItemModel stock){
+        System.out.println(stock.getCompanyName()+":::::::::"+stock.getEmail()+"::::::"+saleRepository.findMinDate(stock.getCompanyName(),stock.getEmail()));
         return saleRepository.findMinDate(stock.getCompanyName(),stock.getEmail());
     }
 }
