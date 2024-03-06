@@ -4,6 +4,7 @@ import com.trademate.project.Model.JwtRequest;
 import com.trademate.project.Model.JwtResponse;
 import com.trademate.project.Model.UserModel;
 import com.trademate.project.Security.JwtHelper;
+import com.trademate.project.Service.EmailService;
 import com.trademate.project.Service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -61,8 +62,22 @@ public String setVerification(@PathVariable String email){
           throw new BadCredentialsException("Invailid User name of Password");
       }
   }
+  @Autowired
+  private EmailService emailService;
+  @GetMapping("/sendemail")
+  public String sendMail(){
+        emailService.sendEmail("anamikamaurya460@gmail.com","Regaurding your Email Verification","Hi Anamika ji You are very cute and beautifull");
+
+        return "Email Sent";
+  }
+
+
+
+
+
   @ExceptionHandler(BadCredentialsException.class)
     public String exceptionHandler(){
       return "Credential Invailid";
   }
+
 }
