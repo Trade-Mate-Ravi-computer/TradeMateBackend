@@ -29,6 +29,7 @@ public class SaleBackupService {
         sale.setRate(saleModel.getRate());
         sale.setProfit(saleModel.getProfit());
         sale.setRemaining(saleModel.getRemaining());
+        sale.setReceivedAmmount(saleModel.getReceivedAmmount());
         sale.setProfit(saleModel.getProfit());
         sale.setTotalAmmount(saleModel.getTotalAmmount());
         return new ResponseEntity<SaleBackupModel>( saleBackupRepository.save(sale), HttpStatus.CREATED);
