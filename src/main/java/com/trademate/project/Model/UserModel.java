@@ -29,6 +29,7 @@ public class UserModel implements UserDetails {
     private String email;
     @Column(nullable = false)
     private String password;
+    private String otp;
     @OneToMany(mappedBy = "user")
     @JsonIgnore
     private List<CompanyModel> company;
