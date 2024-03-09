@@ -1,9 +1,7 @@
 package com.trademate.project.Controller;
 
-import com.trademate.project.Model.JwtRequest;
-import com.trademate.project.Model.JwtResponse;
-import com.trademate.project.Model.UpdatePasswordRequest;
-import com.trademate.project.Model.UserModel;
+import com.trademate.project.Model.*;
+import com.trademate.project.Repository.ContactUsRepository;
 import com.trademate.project.Repository.UserRepository;
 import com.trademate.project.Security.JwtHelper;
 import com.trademate.project.Service.EmailService;
@@ -40,6 +38,8 @@ public class AuthController {
  private UserRepository userRepository;
 @Autowired
 private PasswordEncoder passwordEncoder;
+@Autowired
+private ContactUsRepository contactUsRepository;
  private Logger logger = LoggerFactory.getLogger(AuthController.class);
     @PostMapping("/login")
  public ResponseEntity<JwtResponse> login(@RequestBody JwtRequest jwtRequest){
@@ -113,7 +113,22 @@ public String setVerification(@PathVariable String email){
             return "New password and confirm password should be the same";
         }
     }
-
+    @PostMapping("/contact")
+public String addContact(@RequestBody ContactUsModel contact){
+      try{
+          if(contact.getEmail()!=null){
+              contactUsRepository.save(contact);
+              String message = "We are TradeMate,\n Thanks for contacting us. We are glad that you are here. We will connect with you very quickly,\n and we will answer your question as soon as possible.\n Regards,\n TradeMate";
+              emailService.sendEmail(contact.getEmail(),"Thanks for contacting Us",message);
+              emailService.sendEmail("tradematebusinessapp@gmail.com","new Querry from\n"+contact.getEmail(),contact.getMessage());
+              return "Your query has been sent to TradeMate.";
+          }else{
+              return "Something is wrong please enter a valid email";
+          }
+      }catch(IllegalArgumentException e){
+          return "Please enter valid email";
+      }
+    }
     @ExceptionHandler(BadCredentialsException.class)
     public String exceptionHandler(){
       return "Credential Invalid";
