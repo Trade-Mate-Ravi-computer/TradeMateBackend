@@ -33,6 +33,6 @@ public class CustomerController {
     @PostMapping("/bynamecompany")
     public CustomerModel getBynameAndCompany(@RequestBody CustomerModel customer){
 //        System.out.println("customer name is"+customerService.getByNameAndCompanyName(customer.getCustomerName(),customer.getCompanyName()).getCustomerName());
-        return customerService.getByNameAndCompanyName(customer.getCustomerName(),customer.getCompanyName());
+        return customerService.getByNameAndCompanyName(customer.getCustomerName(),customer.getCompanyName(),customer.getEmail());
     }
 }

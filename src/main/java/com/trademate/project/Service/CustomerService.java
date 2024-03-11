@@ -17,7 +17,7 @@ public class CustomerService {
         customer.getCompany().setCompanyId((companyService.getByCompanyNameAndEmail(customer.getCompanyName(),customer.getEmail()).getCompanyId()));
         return new ResponseEntity<CustomerModel>(customerRepository.save(customer), HttpStatus.CREATED);
     }
-    public CustomerModel getByNameAndCompanyName(String name,String companyName){
-        return customerRepository.findByCustomerNameAndCompanyName(name,companyName);
+    public CustomerModel getByNameAndCompanyName(String name,String companyName,String emial){
+        return customerRepository.findByCustomerNameAndCompanyName(name,companyName,emial);
     }
 }

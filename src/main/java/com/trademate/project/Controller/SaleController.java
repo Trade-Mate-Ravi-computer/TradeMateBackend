@@ -44,9 +44,10 @@ private UserService userService;
     @PostMapping("/addSale")
     public ResponseEntity<SaleModel> addSale(@RequestBody SaleModel saleModel){
         saleModel.getItem().setItemName(saleModel.getItemName());
+        saleModel.setCustomerMobile(customerService.getByNameAndCompanyName(saleModel.getCustomerName(),saleModel.getCompanyName(), saleModel.getEmail()).getMobile());
         stockItemService.updateSaleQuantity(saleModel.getQuantity(),saleModel.getItemName());
         saleModel.getCompany().setCompanyId(companyService.getByCompanyNameAndEmail(saleModel.getCompanyName(),saleModel.getEmail()).getCompanyId());
-        saleModel.getCustomer().setId(customerService.getByNameAndCompanyName(saleModel.getCustomerName(),saleModel.getCompanyName()).getId());
+        saleModel.getCustomer().setId(customerService.getByNameAndCompanyName(saleModel.getCustomerName(),saleModel.getCompanyName(),saleModel.getEmail()).getId());
          return  new ResponseEntity<SaleModel>(saleService.addSale(saleModel), HttpStatus.CREATED);
     }
     @PostMapping("/allsaledetails")
