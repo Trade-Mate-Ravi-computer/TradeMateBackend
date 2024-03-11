@@ -163,21 +163,25 @@ private UserService userService;
     }
     @PostMapping("/dailyReport")
     public MonthlyReportModel dailyReport(@RequestBody DateModel dateModel){
-        System.out.println(dateModel.getDay());
-        MonthlyReportModel monthlyReport = new MonthlyReportModel();
-        Map<String, Long> sumOfRemaining = saleRepository.sumOfRemainingByDay(dateModel.getMonth(),dateModel.getYear(),dateModel.getCompanyName(),dateModel.getEmail(),dateModel.getDay());
-        for (Map.Entry<String, Long> entry : sumOfRemaining.entrySet()) {
-            if(entry.getKey().equals("sumOfTotalAmmount")){
-                monthlyReport.setTotalRevenue(entry.getValue());
-            }else if(entry.getKey().equals("sumOfRemaining")){
-                monthlyReport.setTotalRemaining(entry.getValue());
-            }else{
-                monthlyReport.setTotalProfits(entry.getValue());
-            }
+      try{
+          MonthlyReportModel monthlyReport = new MonthlyReportModel();
+          Map<String, Long> sumOfRemaining = saleRepository.sumOfRemainingByDay(dateModel.getMonth(),dateModel.getYear(),dateModel.getCompanyName(),dateModel.getEmail(),dateModel.getDay());
+          for (Map.Entry<String, Long> entry : sumOfRemaining.entrySet()) {
+              if(entry.getKey().equals("sumOfTotalAmmount")){
+                  monthlyReport.setTotalRevenue(entry.getValue());
+              }else if(entry.getKey().equals("sumOfRemaining")){
+                  monthlyReport.setTotalRemaining(entry.getValue());
+              }else{
+                  monthlyReport.setTotalProfits(entry.getValue());
+              }
 
-        }
-        monthlyReport.setTotalExpenses(expenseService.getByDay(dateModel));
-        return monthlyReport;
+          }
+          monthlyReport.setTotalExpenses(expenseService.getByDay(dateModel));
+          return monthlyReport;
+      }catch(Exception e){
+          return null;
+      }
+
     }
     @PostMapping("/feedback")
     public String add(@RequestBody FeedbackModel feedbackModel){
