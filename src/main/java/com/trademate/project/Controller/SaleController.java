@@ -1,6 +1,8 @@
 package com.trademate.project.Controller;
 
 import com.trademate.project.Model.*;
+import com.trademate.project.Repository.ExpenseRepository;
+import com.trademate.project.Repository.FeedbackRepository;
 import com.trademate.project.Repository.SaleBackupRepository;
 import com.trademate.project.Repository.SaleRepository;
 import com.trademate.project.Service.*;
@@ -11,9 +13,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @RestController
 @CrossOrigin(value = {"http://localhost:3000","https://trade-mate-pearl.vercel.app/"})
@@ -30,7 +30,12 @@ public class SaleController {
     private SaleBackupService saleBackupService;
 @Autowired
 private StockItemService stockItemService;
-
+@Autowired
+private ExpenseService expenseService;
+@Autowired
+private FeedbackRepository feedbackRepository;
+@Autowired
+private UserService userService;
 
     public SaleController(SaleService saleService) {
         this.saleService = saleService;
@@ -112,5 +117,77 @@ private StockItemService stockItemService;
     public LocalDate getMinDate(@RequestBody StockItemModel stock){
         System.out.println(stock.getCompanyName()+":::::::::"+stock.getEmail()+"::::::"+saleRepository.findMinDate(stock.getCompanyName(),stock.getEmail()));
         return saleRepository.findMinDate(stock.getCompanyName(),stock.getEmail());
+    }
+    @PostMapping("/monthlyReport")
+    public MonthlyReportModel monthlyReport(@RequestBody MonthYearModel monthYearModel){
+        MonthlyReportModel monthlyReport= new MonthlyReportModel();
+        List<CustomerSaleModel> topCustomersModel=new ArrayList<>();
+        List<TopItemModel> topItemModelList =new ArrayList<>();
+        List<Object[]> customers = saleRepository.getTopFourCustomers(monthYearModel.getCompanyName(),monthYearModel.getEmail(),monthYearModel.getYear(),monthYearModel.getMonth());
+        List<Object[]> items =saleRepository.getTopThreeItems(monthYearModel.getCompanyName(),monthYearModel.getEmail(),monthYearModel.getYear(),monthYearModel.getMonth());
+        for (Object[] row : customers) {
+            CustomerSaleModel customerSaleModel=new CustomerSaleModel();
+            String customerName = (String) row[0];
+            Long totalSale = (Long) row[1];
+            customerSaleModel.setCustomerName(customerName);
+            customerSaleModel.setTotalSale(totalSale);
+            topCustomersModel.add(customerSaleModel);
+        }
+        for(Object[] row :items){
+            TopItemModel topItemModel =new TopItemModel();
+            String itemName = (String) row[0];
+            Long totalQuantity = (Long) row[1];
+            topItemModel.setItemName(itemName);
+            topItemModel.setQuantity(totalQuantity);
+            topItemModelList.add(topItemModel);
+        }
+        TopCustomersModel topCustomersModel1 =new TopCustomersModel();
+        topCustomersModel1.setCustomerSaleModels(topCustomersModel);
+        TopItemsModel topItemsModel=new TopItemsModel();
+        topItemsModel.setTopItemModelList(topItemModelList);
+        monthlyReport.setTopItemsModel(topItemsModel);
+        monthlyReport.setTopCustomersModel(topCustomersModel1);
+        Map<String,Long> sumOfRemaining= saleRepository.sumOfRemainingByMonths(monthYearModel.getMonth(),monthYearModel.getYear(),monthYearModel.getCompanyName(),monthYearModel.getEmail());
+        for (Map.Entry<String, Long> entry : sumOfRemaining.entrySet()) {
+            if(entry.getKey().equals("sumOfTotalAmmount")){
+                monthlyReport.setTotalRevenue(entry.getValue());
+            }else if(entry.getKey().equals("sumOfRemaining")){
+                monthlyReport.setTotalRemaining(entry.getValue());
+            }else{
+                monthlyReport.setTotalProfits(entry.getValue());
+            }
+                }
+        monthlyReport.setTotalExpenses(expenseService.getByMonth(monthYearModel));
+        return monthlyReport;
+    }
+    @PostMapping("/dailyReport")
+    public MonthlyReportModel dailyReport(@RequestBody DateModel dateModel){
+        System.out.println(dateModel.getDay());
+        MonthlyReportModel monthlyReport = new MonthlyReportModel();
+        Map<String, Long> sumOfRemaining = saleRepository.sumOfRemainingByDay(dateModel.getMonth(),dateModel.getYear(),dateModel.getCompanyName(),dateModel.getEmail(),dateModel.getDay());
+        for (Map.Entry<String, Long> entry : sumOfRemaining.entrySet()) {
+            if(entry.getKey().equals("sumOfTotalAmmount")){
+                monthlyReport.setTotalRevenue(entry.getValue());
+            }else if(entry.getKey().equals("sumOfRemaining")){
+                monthlyReport.setTotalRemaining(entry.getValue());
+            }else{
+                monthlyReport.setTotalProfits(entry.getValue());
+            }
+
+        }
+        monthlyReport.setTotalExpenses(expenseService.getByDay(dateModel));
+        return monthlyReport;
+    }
+    @PostMapping("/feedback")
+    public String add(@RequestBody FeedbackModel feedbackModel){
+        if(feedbackRepository.findByName(userService.getByEmail(feedbackModel.getName()).getName())==null){
+            feedbackModel.setName(userService.getByEmail(feedbackModel.getName()).getName());
+            feedbackRepository.save(feedbackModel);
+            return "Thank For Your Valuable feedback";
+        }else{
+            return "You have already submitted your Review";
+        }
+
+
     }
 }

@@ -1,8 +1,7 @@
 package com.trademate.project.Controller;
 
 import com.trademate.project.Model.*;
-import com.trademate.project.Repository.ContactUsRepository;
-import com.trademate.project.Repository.UserRepository;
+import com.trademate.project.Repository.*;
 import com.trademate.project.Security.JwtHelper;
 import com.trademate.project.Service.EmailService;
 import com.trademate.project.Service.UserService;
@@ -19,6 +18,10 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 //import java.util.logging.Logger;
 
@@ -40,6 +43,10 @@ public class AuthController {
 private PasswordEncoder passwordEncoder;
 @Autowired
 private ContactUsRepository contactUsRepository;
+@Autowired
+private SaleRepository saleRepository;
+@Autowired
+private ExpenseRepository expenseRepository;
  private Logger logger = LoggerFactory.getLogger(AuthController.class);
     @PostMapping("/login")
  public ResponseEntity<JwtResponse> login(@RequestBody JwtRequest jwtRequest){
@@ -129,6 +136,12 @@ public String addContact(@RequestBody ContactUsModel contact){
           return "Please enter valid email";
       }
     }
+@Autowired
+private FeedbackRepository feedbackRepository;
+@GetMapping("/feedback")
+public List<FeedbackModel> getAll(){
+      return feedbackRepository.findAll();
+}
     @ExceptionHandler(BadCredentialsException.class)
     public String exceptionHandler(){
       return "Credential Invalid";

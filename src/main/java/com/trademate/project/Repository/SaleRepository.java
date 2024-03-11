@@ -34,5 +34,28 @@ public interface SaleRepository extends JpaRepository<SaleModel, Long> {
     @Query("SELECT MIN(s.date) FROM SaleModel s WHERE s.companyName = ?1 and s.email=?2")
     LocalDate findMinDate(String companyName, String email);
 
+    @Query("SELECT s.customerName, SUM(s.totalAmmount) AS totalSale " +
+            "FROM SaleModel s " +
+            "WHERE YEAR(s.date) = ?3 " +
+            "  AND s.companyName = ?1 " +
+            "  AND s.email = ?2 " +
+            "  AND month(s.date) = ?4 " +
+            "GROUP BY s.customerName " +
+            "ORDER BY totalSale DESC")
+    List<Object[]> getTopFourCustomers(String companyName, String email, int year ,int month);
+    @Query("SELECT s.itemName, SUM(s.quantity) AS totalQuantity " +
+            "FROM SaleModel s " +
+            "WHERE YEAR(s.date) = ?3 " +
+            "  AND s.companyName = ?1 " +
+            "  AND s.email = ?2 " +
+            "  AND MONTH(s.date) = ?4 " +
+            "GROUP BY s.itemName " +
+            "ORDER BY totalQuantity DESC")
+    List<Object[]> getTopThreeItems(String companyName, String email, int year, int month);
+    @Query("select sum(s.profit) as sumOfProfit,sum(s.remaining) as sumOfRemaining,sum(s.totalAmmount) as sumOfTotalAmmount from SaleModel s where month(s.date)=?1 and year(s.date)=?2 and companyName=?3 and email=?4")
+    Map<String,Long> sumOfRemainingByMonths(int month,int year,String companyName,String email);
+
+    @Query("select sum(s.profit) as sumOfProfit,sum(s.remaining) as sumOfRemaining,sum(s.totalAmmount) as sumOfTotalAmmount from SaleModel s where month(s.date)=?1 and year(s.date)=?2 and companyName=?3 and email=?4 and day(s.date)=?5")
+    Map<String,Long> sumOfRemainingByDay(int month,int year,String companyName,String email, int date);
 
 }
