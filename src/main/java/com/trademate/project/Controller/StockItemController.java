@@ -29,7 +29,7 @@ private CompanyRepository companyRepository;
     }
     @PostMapping("/all")
     public List<StockItemModel> getAllByCompanyName(@RequestBody DateModel date){
-        return repository.fingByCompanyName(date.getCompanyName());
+        return repository.fingByCompanyName(date.getCompanyName(),date.getEmail());
     }
     @PutMapping("/updateStock")
     public String updateStock(@RequestBody StockItemModel item){

@@ -8,6 +8,6 @@ import java.util.List;
 
 public interface StockItemRepository extends JpaRepository<StockItemModel,String> {
     public StockItemModel findByItemName(String itemName);
-    @Query("select s from StockItemModel s where companyName=?1")
-    public List<StockItemModel> fingByCompanyName(String companyName);
+    @Query("select s from StockItemModel s where companyName=?1 and email=?2")
+    public List<StockItemModel> fingByCompanyName(String companyName,String email);
 }
