@@ -1,11 +1,15 @@
 package com.trademate.project.Controller;
 
 import com.trademate.project.Model.UserModel;
+import com.trademate.project.Repository.UserRepository;
 import com.trademate.project.Service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 @RestController
@@ -13,6 +17,8 @@ import java.util.List;
 @RequestMapping("/user")
 public class UserController {
     private UserService userService;
+    @Autowired
+    private UserRepository userRepository;
 
     public UserController(UserService userService) {
         this.userService = userService;
@@ -27,12 +33,14 @@ public class UserController {
     }
 @GetMapping("/byemail/{email}")
     public UserModel getByEmail(@PathVariable String email){
-    System.out.println("Tried to fetch");
-        return userService.getByEmail(email);
+        UserModel existingUser =userService.getByEmail(email);
+        existingUser.setRemainingDays((int) ChronoUnit.DAYS.between(LocalDate.now(),existingUser.getExpDate()));
+        userRepository.save(existingUser);
+        return existingUser;
 }
     @PostMapping("/byemail")
     public UserModel getByEmailBody(@RequestBody UserModel userModel){
-        System.out.println("Tried to fetch");
         return userService.getByEmail(userModel.getEmail());
     }
+
 }

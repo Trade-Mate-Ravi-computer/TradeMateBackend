@@ -9,6 +9,7 @@ import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.time.LocalDate;
 import java.util.Collection;
 import java.util.List;
 
@@ -29,10 +30,17 @@ public class UserModel implements UserDetails {
     private String email;
     @Column(nullable = false)
     private String password;
+    private LocalDate subDate;
+    private LocalDate expDate;
     private String otp;
     @OneToMany(mappedBy = "user")
     @JsonIgnore
     private List<CompanyModel> company;
+    private boolean isSubscribed;
+    private int remainingDays;
+    @OneToMany(mappedBy = "user")
+    @JsonIgnore
+    private List<OrdersModel> orders;
 
 
 

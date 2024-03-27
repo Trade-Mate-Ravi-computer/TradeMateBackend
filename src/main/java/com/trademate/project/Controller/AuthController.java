@@ -1,11 +1,14 @@
 package com.trademate.project.Controller;
 
+import com.razorpay.Order;
+import com.razorpay.RazorpayException;
 import com.trademate.project.Model.*;
 import com.trademate.project.Repository.*;
 import com.trademate.project.Security.JwtHelper;
 import com.trademate.project.Service.EmailService;
 import com.trademate.project.Service.UserService;
 import org.apache.commons.lang3.RandomStringUtils;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,10 +21,14 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
+import com.razorpay.RazorpayClient;
 
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 //import java.util.logging.Logger;
 
@@ -47,6 +54,8 @@ private ContactUsRepository contactUsRepository;
 private SaleRepository saleRepository;
 @Autowired
 private ExpenseRepository expenseRepository;
+@Autowired
+private OrdersRepository ordersRepository;
  private Logger logger = LoggerFactory.getLogger(AuthController.class);
     @PostMapping("/login")
  public ResponseEntity<JwtResponse> login(@RequestBody JwtRequest jwtRequest){
@@ -58,6 +67,10 @@ this.doAuthenticate(jwtRequest.getEmail(),jwtRequest.getPassword());
  }
 @PostMapping("/sign-up")
 public UserModel addUser(@RequestBody UserModel user){
+    user.setSubscribed(true);
+    user.setRemainingDays(15);
+    user.setSubDate(LocalDate.now());
+    user.setExpDate(LocalDate.now().plusDays(user.getRemainingDays()));
         user.setVerified(false);
         return userService.addUser(user);
 }
@@ -145,6 +158,45 @@ public List<FeedbackModel> getAll(){
     @ExceptionHandler(BadCredentialsException.class)
     public String exceptionHandler(){
       return "Credential Invalid";
+  }
+
+  @PostMapping("/create_order")
+    public  String createOrder(@RequestBody Map<String,Object> order) throws RazorpayException {
+      int amt = Integer.parseInt(order.get("amount").toString());
+      var client = new RazorpayClient("rzp_test_daKBtgff3GpV4I", "Szf9Sb91O1eDFyyMHgV1aDoM");
+      JSONObject ob = new JSONObject();
+      ob.put("amount", amt * 100);
+      ob.put("currency", "INR");
+      ob.put("receipt", "txn_235425");
+      //creating order
+      Order orders = client.orders.create(ob);
+      OrdersModel ordersModel = new OrdersModel();
+      ordersModel.setUser(userRepository.findByEmail(order.get("email").toString()));
+      ordersModel.setOrderId(orders.get("id"));
+      ordersModel.setStatus("created");
+      ordersModel.setAmount((orders.get("amount")).toString());
+      ordersModel.setReceipt(orders.get("receipt"));
+      ordersRepository.save(ordersModel);
+      return orders.toString();
+  }
+  @PostMapping("/updateOrder")
+    public void updateOrder(@RequestBody Map<String,String> orderStatus){
+    OrdersModel order = ordersRepository.findByOrderId(orderStatus.get("order_id"));
+    order.setStatus(orderStatus.get("status"));
+    ordersRepository.save(order);
+    UserModel user = userRepository.findByEmail(orderStatus.get("email"));
+    user.setRemainingDays((Math.max(user.getRemainingDays(), 0))+Integer.parseInt(orderStatus.get("days")));
+    user.setExpDate(user.getExpDate().plusDays(Integer.parseInt(orderStatus.get("days"))));
+    userRepository.save(user);
+    }
+  @GetMapping("/setSubscription/{email}")
+    public String setSubscription(@PathVariable String email){
+    UserModel user = userRepository.findByEmail(email);
+    user.setSubscribed(false);
+    userRepository.save(user);
+      long daysDifference = ChronoUnit.DAYS.between(LocalDate.now(),user.getSubDate());
+      System.out.println("Remaining Days  "+daysDifference);
+    return "Subscription saved";
   }
 
 }

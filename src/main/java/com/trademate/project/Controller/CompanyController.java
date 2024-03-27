@@ -29,7 +29,6 @@ public class CompanyController {
     }
     @GetMapping("/all")
     public List<CompanyModel> getAll(){
-        System.out.println("Some problem Occuers");
         return companyService.getAllCompany();
     }
     @PostMapping("/byuser/{email}")
