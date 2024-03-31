@@ -79,7 +79,8 @@ private UserService userService;
     @PostMapping("/profit")
     public Object getProfit(@RequestBody DateModel intDate) {
        Date date = new Date(intDate.getYear(),intDate.getMonth(),intDate.getDay());
-        return saleService.sumOfProfits(date.getMonth(),date.getYear(),intDate.getCompanyName(),intDate.getEmail());
+        System.out.println(date.getMonth()+",year"+date.getYear()+"date in date"+intDate.getMonth());
+        return saleService.sumOfProfits(intDate.getMonth(),date.getYear(),intDate.getCompanyName(),intDate.getEmail());
     }
     @PostMapping("/bycname")
     public List<SaleModel> getByCustomerName(@RequestBody String customerName){
