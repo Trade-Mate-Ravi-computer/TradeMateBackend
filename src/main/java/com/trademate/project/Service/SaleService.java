@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -39,7 +41,7 @@ public class SaleService {
         saleModel.setProfit(pr);
         ReceivedMoneyModel receivedMoneyModel = new ReceivedMoneyModel();
         receivedMoneyModel.setDate(saleModel.getDate());
-        receivedMoneyModel.setAmount(saleModel.getTotalAmmount());
+        receivedMoneyModel.setAmount(saleModel.getReceivedAmmount());
         receivedMoneyModel.setCustomerName(saleModel.getCustomerName());
         recevivedMoneyService.addMoney(receivedMoneyModel);
         return saleRepository.save(saleModel);
@@ -52,6 +54,11 @@ public class SaleService {
     }
     public String updateSales(SaleModel newSale,long id){
         saleRepository.findById(id).map(sale->{
+            ReceivedMoneyModel receivedMoneyModel = new ReceivedMoneyModel();
+receivedMoneyModel.setDate(LocalDate.now());
+receivedMoneyModel.setAmount(newSale.getReceivedAmmount());
+receivedMoneyModel.setCustomerName(sale.getCustomerName());
+recevivedMoneyService.addMoney(receivedMoneyModel);
             sale.setReceivedAmmount(sale.getReceivedAmmount()+newSale.getReceivedAmmount());
             sale.setRemaining(sale.getRemaining()-newSale.getReceivedAmmount());
             return saleRepository.save(sale);
