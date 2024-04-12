@@ -1,10 +1,7 @@
 package com.trademate.project.Controller;
 
 import com.trademate.project.Model.*;
-import com.trademate.project.Repository.ExpenseRepository;
-import com.trademate.project.Repository.FeedbackRepository;
-import com.trademate.project.Repository.SaleBackupRepository;
-import com.trademate.project.Repository.SaleRepository;
+import com.trademate.project.Repository.*;
 import com.trademate.project.Service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -36,6 +33,8 @@ private ExpenseService expenseService;
 private FeedbackRepository feedbackRepository;
 @Autowired
 private UserService userService;
+@Autowired
+private ReceivedMoneyRepository receivedMoneyRepository;
 
     public SaleController(SaleService saleService) {
         this.saleService = saleService;
@@ -43,6 +42,11 @@ private UserService userService;
 
     @PostMapping("/addSale")
     public ResponseEntity<SaleModel> addSale(@RequestBody SaleModel saleModel){
+        ReceivedMoneyModel receivedMoneyModel = new ReceivedMoneyModel();
+        receivedMoneyModel.setDate(saleModel.getDate());
+        receivedMoneyModel.setAmount(saleModel.getTotalAmmount());
+        receivedMoneyModel.setCustomerName(saleModel.getCustomerName());
+
         saleModel.getItem().setItemName(saleModel.getItemName());
         saleModel.setCustomerMobile(customerService.getByNameAndCompanyName(saleModel.getCustomerName(),saleModel.getCompanyName(), saleModel.getEmail()).getMobile());
         stockItemService.updateSaleQuantity(saleModel.getQuantity(),saleModel.getItemName());
