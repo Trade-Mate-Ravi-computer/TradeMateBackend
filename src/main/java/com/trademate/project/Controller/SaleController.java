@@ -34,7 +34,7 @@ private FeedbackRepository feedbackRepository;
 @Autowired
 private UserService userService;
 @Autowired
-private ReceivedMoneyRepository receivedMoneyRepository;
+private RecevivedMoneyService recevivedMoneyService;
 
     public SaleController(SaleService saleService) {
         this.saleService = saleService;
@@ -46,7 +46,7 @@ private ReceivedMoneyRepository receivedMoneyRepository;
         receivedMoneyModel.setDate(saleModel.getDate());
         receivedMoneyModel.setAmount(saleModel.getTotalAmmount());
         receivedMoneyModel.setCustomerName(saleModel.getCustomerName());
-
+recevivedMoneyService.addMoney(receivedMoneyModel);
         saleModel.getItem().setItemName(saleModel.getItemName());
         saleModel.setCustomerMobile(customerService.getByNameAndCompanyName(saleModel.getCustomerName(),saleModel.getCompanyName(), saleModel.getEmail()).getMobile());
         stockItemService.updateSaleQuantity(saleModel.getQuantity(),saleModel.getItemName());
