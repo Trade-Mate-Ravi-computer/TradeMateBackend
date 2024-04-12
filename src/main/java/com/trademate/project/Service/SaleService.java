@@ -2,6 +2,7 @@ package com.trademate.project.Service;
 
 import com.trademate.project.Model.MonthYearModel;
 import com.trademate.project.Model.QuarterMonthModel;
+import com.trademate.project.Model.ReceivedMoneyModel;
 import com.trademate.project.Model.SaleModel;
 import com.trademate.project.Repository.SaleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,8 @@ public class SaleService {
     private StockItemService stockItemService;
     @Autowired
     private CompanyService companyService;
+    @Autowired
+    private RecevivedMoneyService recevivedMoneyService;
 
     public SaleService(SaleRepository saleRepository) {
         this.saleRepository = saleRepository;
@@ -34,6 +37,11 @@ public class SaleService {
        }
         int pr = saleModel.getTotalAmmount()-saleModel.getQuantity()*(stockItemService.getByName(saleModel.getItemName()).getPurchasePrice());
         saleModel.setProfit(pr);
+        ReceivedMoneyModel receivedMoneyModel = new ReceivedMoneyModel();
+        receivedMoneyModel.setDate(saleModel.getDate());
+        receivedMoneyModel.setAmount(saleModel.getTotalAmmount());
+        receivedMoneyModel.setCustomerName(saleModel.getCustomerName());
+        recevivedMoneyService.addMoney(receivedMoneyModel);
         return saleRepository.save(saleModel);
     }
     public List<SaleModel> allSale(){

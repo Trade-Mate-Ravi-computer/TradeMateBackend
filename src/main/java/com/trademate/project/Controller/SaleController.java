@@ -48,11 +48,6 @@ private RecevivedMoneyService recevivedMoneyService;
         stockItemService.updateSaleQuantity(saleModel.getQuantity(),saleModel.getItemName());
         saleModel.getCompany().setCompanyId(companyService.getByCompanyNameAndEmail(saleModel.getCompanyName(),saleModel.getEmail()).getCompanyId());
         saleModel.getCustomer().setId(customerService.getByNameAndCompanyName(saleModel.getCustomerName(),saleModel.getCompanyName(),saleModel.getEmail()).getId());
-        ReceivedMoneyModel receivedMoneyModel = new ReceivedMoneyModel();
-        receivedMoneyModel.setDate(saleModel.getDate());
-        receivedMoneyModel.setAmount(saleModel.getTotalAmmount());
-        receivedMoneyModel.setCustomerName(saleModel.getCustomerName());
-        recevivedMoneyService.addMoney(receivedMoneyModel);
          return  new ResponseEntity<SaleModel>(saleService.addSale(saleModel), HttpStatus.CREATED);
     }
     @PostMapping("/allsaledetails")
