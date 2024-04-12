@@ -42,16 +42,17 @@ private RecevivedMoneyService recevivedMoneyService;
 
     @PostMapping("/addSale")
     public ResponseEntity<SaleModel> addSale(@RequestBody SaleModel saleModel){
-        ReceivedMoneyModel receivedMoneyModel = new ReceivedMoneyModel();
-        receivedMoneyModel.setDate(saleModel.getDate());
-        receivedMoneyModel.setAmount(saleModel.getTotalAmmount());
-        receivedMoneyModel.setCustomerName(saleModel.getCustomerName());
-recevivedMoneyService.addMoney(receivedMoneyModel);
+
         saleModel.getItem().setItemName(saleModel.getItemName());
         saleModel.setCustomerMobile(customerService.getByNameAndCompanyName(saleModel.getCustomerName(),saleModel.getCompanyName(), saleModel.getEmail()).getMobile());
         stockItemService.updateSaleQuantity(saleModel.getQuantity(),saleModel.getItemName());
         saleModel.getCompany().setCompanyId(companyService.getByCompanyNameAndEmail(saleModel.getCompanyName(),saleModel.getEmail()).getCompanyId());
         saleModel.getCustomer().setId(customerService.getByNameAndCompanyName(saleModel.getCustomerName(),saleModel.getCompanyName(),saleModel.getEmail()).getId());
+        ReceivedMoneyModel receivedMoneyModel = new ReceivedMoneyModel();
+        receivedMoneyModel.setDate(saleModel.getDate());
+        receivedMoneyModel.setAmount(saleModel.getTotalAmmount());
+        receivedMoneyModel.setCustomerName(saleModel.getCustomerName());
+        recevivedMoneyService.addMoney(receivedMoneyModel);
          return  new ResponseEntity<SaleModel>(saleService.addSale(saleModel), HttpStatus.CREATED);
     }
     @PostMapping("/allsaledetails")
