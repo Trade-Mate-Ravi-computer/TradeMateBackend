@@ -33,7 +33,7 @@ import java.util.Optional;
 //import java.util.logging.Logger;
 
 @RestController
-@CrossOrigin(value = {"http://localhost:3000","https://trade-mate-pearl.vercel.app/"})
+@CrossOrigin(value = {"http://localhost:3000","https://trade-mate-pearl.vercel.app/","https://tradematebackend-mdsd.onrender.com","https://trade-mate-pearl.vercel.app/"})
 @RequestMapping("/auth")
 public class AuthController {
  @Autowired
