@@ -198,5 +198,8 @@ public List<FeedbackModel> getAll(){
       System.out.println("Remaining Days  "+daysDifference);
     return "Subscription saved";
   }
-
+  @GetMapping("/hello")
+public String hellow(){
+    return "Hello World";
+  }
 }
