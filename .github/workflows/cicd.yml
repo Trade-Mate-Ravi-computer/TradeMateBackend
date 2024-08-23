@@ -28,7 +28,7 @@ jobs:
 
       - name: Publish Image to Docker Hub
         run: docker push integardtionninjas/springboot-example:latest
-
+# testing
   deploy:
     needs: build
     runs-on: self-hosted
