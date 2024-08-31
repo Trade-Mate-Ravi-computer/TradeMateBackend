@@ -15,7 +15,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/purchase")
-@CrossOrigin(value = {"http://localhost:3000","https://trade-mate-pearl.vercel.app/","http://ec2-16-171-11-228.eu-north-1.compute.amazonaws.com:8080","http://ec2-51-20-54-251.eu-north-1.compute.amazonaws.com:3000/"})public class PurchaseController {
+@CrossOrigin(value = {"http://localhost:3000","https://trade-mate-pearl.vercel.app/","http://ec2-16-171-11-228.eu-north-1.compute.amazonaws.com:8080","http://51.20.69.152/"})public class PurchaseController {
     @Autowired
     private PurchaseService purchaseService;
 @Autowired
