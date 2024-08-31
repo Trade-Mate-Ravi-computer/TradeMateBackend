@@ -1,5 +1,5 @@
 FROM openjdk:17
 EXPOSE 8080
-ADD target/trademate-0.0.1-SNAPSHOT.jar trademate.jar
+COPY --from=build /app/target/ecommerce-0.0.1-SNAPSHOT.jar ecommerce.jar
 ENTRYPOINT ["java", "-jar", "trademate.jar"]
 
