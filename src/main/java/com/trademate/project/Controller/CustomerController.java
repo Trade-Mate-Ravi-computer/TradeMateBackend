@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@CrossOrigin(value = {"http://localhost:3000","https://trade-mate-pearl.vercel.app/","http://13.60.161.70/"})@RequestMapping("/customer")
+@CrossOrigin(value = {"http://localhost:3000","http://ravicomputer.online/","http://13.60.161.70/"})@RequestMapping("/customer")
 public class CustomerController {
     @Autowired
     private CustomerService customerService;

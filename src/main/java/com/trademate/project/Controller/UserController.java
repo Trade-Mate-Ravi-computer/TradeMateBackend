@@ -13,7 +13,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 @RestController
-@CrossOrigin(value = {"http://localhost:3000","https://trade-mate-pearl.vercel.app/","http://13.60.161.70/"})@RequestMapping("/user")
+@CrossOrigin(value = {"http://localhost:3000","http://ravicomputer.online/","http://13.60.161.70/"})@RequestMapping("/user")
 public class UserController {
     private UserService userService;
     @Autowired
