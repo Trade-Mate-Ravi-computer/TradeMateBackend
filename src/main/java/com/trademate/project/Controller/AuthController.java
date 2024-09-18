@@ -33,7 +33,7 @@ import java.util.Optional;
 //import java.util.logging.Logger;
 
 @RestController
-@CrossOrigin(value = {"http://localhost:3000","http://ravicomputer.online/","http://13.60.161.70/"})
+@CrossOrigin(value = {"http://localhost:3000","https://ravicomputer.online/","http://13.60.161.70/"})
 @RequestMapping("/auth")
 public class AuthController {
  @Autowired

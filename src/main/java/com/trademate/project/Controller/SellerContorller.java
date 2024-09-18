@@ -11,7 +11,8 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@CrossOrigin(value = {"http://localhost:3000","http://ravicomputer.online/","http://13.60.161.70/"})@RequestMapping("/seller")
+@CrossOrigin(value = {"http://localhost:3000","https://ravicomputer.online/","http://13.60.161.70/"})
+@RequestMapping("/seller")
 public class SellerContorller {
     @Autowired
     private SellerService service;

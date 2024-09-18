@@ -13,7 +13,8 @@ import java.time.LocalDate;
 import java.util.*;
 
 @RestController
-@CrossOrigin(value = {"http://localhost:3000","http://ravicomputer.online/","http://13.60.161.70/"})@RequestMapping("/sales")
+@CrossOrigin(value = {"http://localhost:3000","https://ravicomputer.online/","http://13.60.161.70/"})
+@RequestMapping("/sales")
 public class SaleController {
     private SaleService saleService;
     @Autowired

@@ -13,7 +13,8 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/stock")
-@CrossOrigin(value = {"http://localhost:3000","http://ravicomputer.online/","http://13.60.161.70/"})public class StockItemController {
+@CrossOrigin(value = {"http://localhost:3000","https://ravicomputer.online/","http://13.60.161.70/"})
+public class StockItemController {
     @Autowired
     private StockItemService service;
 @Autowired
