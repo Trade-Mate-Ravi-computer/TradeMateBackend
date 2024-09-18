@@ -30,7 +30,7 @@ jobs:
         run: docker pull badboy2977/tdbackend:latest 
         
       - name: Delete Old Container
-        run: docker rm -f springContainer || true
+        run: docker rm -f sContainer || true
         
       - name: Run Docker Container
-        run: docker run -d -p 8080:8080 --name springContainer badboy2977/tdbackend
+        run: docker run -d -p 80:8080 --name sContainer badboy2977/tdbackend
