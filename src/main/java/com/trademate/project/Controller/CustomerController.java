@@ -1,5 +1,6 @@
 package com.trademate.project.Controller;
 
+import com.trademate.project.Model.CompanyModel;
 import com.trademate.project.Model.CustomerModel;
 import com.trademate.project.Repository.CustomerRepository;
 import com.trademate.project.Service.CustomerService;
@@ -8,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @CrossOrigin(value = {"http://localhost:3000","https://ravicomputer.online/","http://13.60.161.70/"})
@@ -20,19 +22,18 @@ public class CustomerController {
 
     @PostMapping("/add")
     public ResponseEntity<CustomerModel> addCust(@RequestBody CustomerModel customerModel){
-        return customerService.addCust(customerModel);
+        return customerService.addCustomer(customerModel);
     }
-    @GetMapping("/byname/{name}")
-    public CustomerModel getByName(@PathVariable String name){
-        return customerRepository.findByCustomerName(name);
+
+    @GetMapping("/customerById/{customerId}")
+    public Optional<CustomerModel> getCustomerById(@PathVariable long customerId){
+        return customerRepository.findById(customerId);
     }
-    @GetMapping("/all")
-    public List<CustomerModel> getAll(){
-        return customerRepository.findAll();
+    @GetMapping("/allCustomersByCompany/{companyId}")
+    public List<CustomerModel> getAll(@PathVariable long companyId){
+        CompanyModel companyModel = new CompanyModel();
+        companyModel.setCompanyId(companyId);
+        return customerRepository.findByCompany(companyModel);
     }
-    @PostMapping("/bynamecompany")
-    public CustomerModel getBynameAndCompany(@RequestBody CustomerModel customer){
-//        System.out.println("customer name is"+customerService.getByNameAndCompanyName(customer.getCustomerName(),customer.getCompanyName()).getCustomerName());
-        return customerService.getByNameAndCompanyName(customer.getCustomerName(),customer.getCompanyName(),customer.getEmail());
-    }
+
 }

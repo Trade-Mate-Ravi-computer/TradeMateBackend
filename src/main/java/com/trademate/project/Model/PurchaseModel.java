@@ -19,8 +19,6 @@ public class PurchaseModel {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
-    @Column(unique = false)
-    private String itemName;
     private int price;
     private LocalDate date;
     private int quantity;
@@ -28,9 +26,6 @@ public class PurchaseModel {
     private int paidAmmount;
     private double gstInRupee;
     private int remaining;
-    private String companyName;
-    private String email;
-    private String sellerName;
     @ManyToOne
     private StockItemModel item;
     @ManyToOne

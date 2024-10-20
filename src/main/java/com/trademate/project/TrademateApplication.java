@@ -10,5 +10,4 @@ public class TrademateApplication {
 		SpringApplication.run(TrademateApplication.class, args);
 		System.out.println("Server Started");
 	}
-
 }

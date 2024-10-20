@@ -15,10 +15,8 @@ public class SellerService {
     public ResponseEntity<SellerModel> addSale(SellerModel seller){
         return new ResponseEntity<SellerModel>(sellerRepository.save(seller), HttpStatus.CREATED);
     }
-    public SellerModel getByName(String name){
-        return sellerRepository.findBySellerName(name);
-    }
-    public SellerModel getByNameAndCompany(String name,String company){
-        return sellerRepository.findBySellerNameAndCompanyName(name,company);
+
+    public SellerModel getBySellerId(long id){
+        return sellerRepository.findById(id);
     }
 }

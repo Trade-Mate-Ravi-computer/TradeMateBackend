@@ -28,14 +28,12 @@ public class SellerModel {
     @Column(nullable = false)
     private String sellerName;
     private String address;
-    private String companyName;
     private String state;
     private String country;
     private int pinCode;
     private String gstIn;
     private String gstType;
     private long mobile;
-    private String email;
     @ManyToOne
     private CompanyModel company;
     @OneToMany(mappedBy ="seller")

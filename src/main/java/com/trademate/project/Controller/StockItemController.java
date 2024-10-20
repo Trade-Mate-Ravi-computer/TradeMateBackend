@@ -1,5 +1,6 @@
 package com.trademate.project.Controller;
 
+import com.trademate.project.Model.CompanyModel;
 import com.trademate.project.Model.DateModel;
 import com.trademate.project.Model.StockItemModel;
 import com.trademate.project.Repository.CompanyRepository;
@@ -23,13 +24,11 @@ private StockItemRepository repository;
 private CompanyRepository companyRepository;
         @PostMapping("/add")
     public ResponseEntity<StockItemModel> addStock(@RequestBody StockItemModel item){
-            item.setItemName(item.getItemName().trim().replaceAll("/","-"));
-            item.getCompany().setCompanyId(companyRepository.findByCompanyNameAndEmail(item.getCompanyName(),item.getEmail()).getCompanyId());
         return service.addStock(item);
     }
     @PostMapping("/all")
-    public List<StockItemModel> getAllByCompanyName(@RequestBody DateModel date){
-        return repository.fingByCompanyName(date.getCompanyName(),date.getEmail());
+    public List<StockItemModel> getAllByCompanyName(@RequestBody CompanyModel company){
+        return repository.findByCompany(company);
     }
     @PutMapping("/updateStock")
     public String updateStock(@RequestBody StockItemModel item){

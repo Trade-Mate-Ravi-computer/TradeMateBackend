@@ -1,5 +1,6 @@
 package com.trademate.project.Service;
 
+import com.trademate.project.Model.CompanyModel;
 import com.trademate.project.Model.PurchaseModel;
 import com.trademate.project.Repository.PurchaseRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,8 +19,10 @@ public class PurchaseService {
     public ResponseEntity<PurchaseModel> addPurchase(PurchaseModel purchase){
         return  new ResponseEntity<PurchaseModel>(purchaseRepository.save(purchase), HttpStatus.CREATED);
     }
-    public List<PurchaseModel> getByCompanyName(String companyName){
-        return purchaseRepository.findAllByCompanyName(companyName);
+    public List<PurchaseModel> getByCompanyName(long companyId){
+        CompanyModel companyModel =new CompanyModel();
+        companyModel.setCompanyId(companyId);
+        return purchaseRepository.findAllByCompany(companyModel);
     }
     public PurchaseModel getById(long id){
         return purchaseRepository.findById(id);

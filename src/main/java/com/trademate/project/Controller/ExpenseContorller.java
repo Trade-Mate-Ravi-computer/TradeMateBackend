@@ -13,17 +13,16 @@ import java.util.List;
 @CrossOrigin(value = {"http://localhost:3000","https://ravicomputer.online/","http://13.60.161.70/"})
 @RequestMapping("/expense")
 public class ExpenseContorller {
-    @Autowired
-    private ExpenseService service;
-@Autowired
-private CompanyService companyService;
-    @PostMapping("/add")
-    public ResponseEntity<ExpenseModel> add(@RequestBody ExpenseModel expense){
-        expense.getCompany().setCompanyId(companyService.getByCompanyNameAndEmail(expense.getCompanyName(),expense.getEmail()).getCompanyId());
-        return service.add(expense);
-    }
-    @GetMapping("/all")
-    public List<ExpenseModel> getAll(){
-        return service.getAll();
-    }
+//    @Autowired
+//    private ExpenseService service;
+//@Autowired
+//private CompanyService companyService;
+//    @PostMapping("/add")
+//    public ResponseEntity<ExpenseModel> add(@RequestBody ExpenseModel expense){
+//        return service.add(expense);
+//    }
+//    @GetMapping("/all")
+//    public List<ExpenseModel> getAll(){
+//        return service.getAll();
+//    }
 }

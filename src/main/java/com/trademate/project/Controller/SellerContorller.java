@@ -1,6 +1,8 @@
 package com.trademate.project.Controller;
 
+import com.trademate.project.Model.CompanyModel;
 import com.trademate.project.Model.SellerModel;
+import com.trademate.project.Repository.CustomerRepository;
 import com.trademate.project.Repository.SellerRepository;
 import com.trademate.project.Service.CompanyService;
 import com.trademate.project.Service.SellerService;
@@ -20,18 +22,22 @@ public class SellerContorller {
     private CompanyService companyService;
     @Autowired
     private SellerRepository sellerRepository;
+    @Autowired
+    private CustomerRepository customerRepository;
 
     @PostMapping("/add")
     public ResponseEntity<SellerModel> addSale(@RequestBody SellerModel seller){
-        seller.getCompany().setCompanyId(companyService.getByCompanyNameAndEmail(seller.getCompanyName(),seller.getEmail()).getCompanyId());
+        seller.setCompany(seller.getCompany());
         return service.addSale(seller);
     }
-    @GetMapping("/byname/{name}")
-    public SellerModel getByName(@PathVariable String name){
-        return service.getByName(name);
+    @GetMapping("/byname/{id}")
+    public SellerModel getByName(@PathVariable long  id){
+        return service.getBySellerId(id);
     }
-    @GetMapping("/all")
-    public List<SellerModel> getAll() {
-        return sellerRepository.findAll();
+    @GetMapping("/all/{companyId}")
+    public List<SellerModel> getAll(long companyId) {
+        CompanyModel companyModel =new CompanyModel();
+         companyModel.setCompanyId(companyId);
+         return sellerRepository.findByCompany(companyModel);
     }
 }

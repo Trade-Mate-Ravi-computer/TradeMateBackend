@@ -18,11 +18,11 @@ import java.util.List;
 public class StockItemModel {
     @Id
     @Column(unique = true,nullable = false)
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private long itemId;
     private String itemName;
     private int purchasePrice;
     private String category;
-    private String companyName;
-    private String email;
     private int gstInPercent;
     private int quantity;
     @ManyToOne

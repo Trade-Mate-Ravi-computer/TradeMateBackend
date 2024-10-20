@@ -20,7 +20,6 @@ public class SaleModel {
     private long id;
     @ManyToOne
     private StockItemModel item;
-    private String customerName;
     private int quantity;
     private LocalDate date;
     private int rate;
@@ -29,10 +28,7 @@ public class SaleModel {
     private int totalAmmount;
     private int remaining;
     private int profit;
-    private String itemName;
     private long customerMobile;
-    private String email;
-    private String companyName;
     @ManyToOne
     private CompanyModel company;
     @ManyToOne
