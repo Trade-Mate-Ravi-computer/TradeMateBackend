@@ -12,6 +12,6 @@ import lombok.Setter;
 public class MonthYearModel {
     private int month;
     private int year;
-    private String companyName;
+    private long companyId;
     private String email;
 }

@@ -1,5 +1,6 @@
 package com.trademate.project.Service;
 
+import com.trademate.project.Model.CompanyModel;
 import com.trademate.project.Model.CustomerModel;
 import com.trademate.project.Repository.CustomerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,11 +14,8 @@ public class CustomerService {
     private CustomerRepository customerRepository;
     @Autowired
     private CompanyService companyService;
-    public ResponseEntity<CustomerModel> addCust(CustomerModel customer){
-        customer.getCompany().setCompanyId((companyService.getByCompanyNameAndEmail(customer.getCompanyName(),customer.getEmail()).getCompanyId()));
+    public ResponseEntity<CustomerModel> addCustomer(CustomerModel customer){
         return new ResponseEntity<CustomerModel>(customerRepository.save(customer), HttpStatus.CREATED);
     }
-    public CustomerModel getByNameAndCompanyName(String name,String companyName,String emial){
-        return customerRepository.findByCustomerNameAndCompanyName(name,companyName,emial);
-    }
+
 }

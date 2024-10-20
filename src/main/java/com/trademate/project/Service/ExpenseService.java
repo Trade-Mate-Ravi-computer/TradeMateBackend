@@ -17,26 +17,4 @@ public class ExpenseService {
     private ExpenseRepository expenseRepository;
 
 
-    public ResponseEntity<ExpenseModel> add(ExpenseModel expense){
-        return new ResponseEntity<ExpenseModel>(expenseRepository.save(expense), HttpStatus.CREATED);
-    }
-    public List<ExpenseModel> getAll(){
-        return expenseRepository.findAll();
-    }
-    public long getByMonth(MonthYearModel monthYearModel){
-        if(expenseRepository.sumOfExpenseByMonth(monthYearModel.getMonth(),monthYearModel.getYear(),monthYearModel.getCompanyName(),monthYearModel.getEmail())!=null){
-            return expenseRepository.sumOfExpenseByMonth(monthYearModel.getMonth(),monthYearModel.getYear(),monthYearModel.getCompanyName(),monthYearModel.getEmail());
-
-        }else{
-            return 0;
-        }
-    }
-    public long getByDay(DateModel monthYearModel){
-        if(expenseRepository.sumOfExpenseByDay(monthYearModel.getMonth(),monthYearModel.getYear(),monthYearModel.getCompanyName(),monthYearModel.getEmail(),monthYearModel.getDay())!=null){
-            return expenseRepository.sumOfExpenseByDay(monthYearModel.getMonth(),monthYearModel.getYear(),monthYearModel.getCompanyName(),monthYearModel.getEmail(),monthYearModel.getDay());
-
-        }else{
-            return 0;
-        }
-    }
 }

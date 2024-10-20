@@ -20,7 +20,6 @@ public class SaleBackupModel {
     private long id;
     @ManyToOne
     private StockItemModel item;
-    private String customerName;
     private int quantity;
     private LocalDate date;
     private int rate;
@@ -29,9 +28,7 @@ public class SaleBackupModel {
     private int totalAmmount;
     private int remaining;
     private int profit;
-    private String itemName;
-    private String email;
-    private String companyName;
+    private long customerMobile;
     @ManyToOne
     private CompanyModel company;
     @ManyToOne

@@ -1,5 +1,6 @@
 package com.trademate.project.Controller;
 
+import com.trademate.project.Model.CompanyModel;
 import com.trademate.project.Model.PurchaseModel;
 import com.trademate.project.Model.StockItemModel;
 import com.trademate.project.Repository.PurchaseRepository;
@@ -29,28 +30,18 @@ private PurchaseRepository purchaseRepository;
 private SellerService sellerService;
     @PostMapping("/add")
     public ResponseEntity<PurchaseModel> addPurchase(@RequestBody PurchaseModel purchase){
-            stockItemService.updateItem(purchase.getPrice(),purchase.getItemName());
-            stockItemService.updateQuantity(purchase.getQuantity(),purchase.getItemName());
-            purchase.setTotalAmmount(purchase.getPrice()*purchase.getQuantity());
-            purchase.setGstInRupee((float)purchase.getTotalAmmount()*stockItemService.getByName(purchase.getItemName()).getGstInPercent()/(100+stockItemService.getByName(purchase.getItemName()).getGstInPercent()));
-            purchase.setRemaining((purchase.getPrice()*purchase.getQuantity())-purchase.getPaidAmmount());
-            purchase.getCompany().setCompanyId(companyService.getByCompanyNameAndEmail(purchase.getCompanyName(),purchase.getEmail()).getCompanyId());
-            purchase.getItem().setItemName(purchase.getItemName());
-            purchase.getSeller().setId(sellerService.getByNameAndCompany(purchase.getSellerName(),purchase.getCompanyName()).getId());
             return purchaseService.addPurchase(purchase);
     }
     @PostMapping("/getbycompany")
-    public List<PurchaseModel> getByCompany(@RequestBody PurchaseModel purchase){
-        return purchaseService.getByCompanyName(purchase.getCompanyName());
+    public List<PurchaseModel> getByCompany(@RequestBody CompanyModel company){
+        return purchaseRepository.findAllByCompany(company);
     }
     @PostMapping("/update")
     public String updateById(@RequestBody PurchaseModel purchase){
-        System.out.println(purchase.getPaidAmmount());
-        System.out.println(purchase.getId());
-PurchaseModel existingPurchase = purchaseService.getById(purchase.getId());
-existingPurchase.setPaidAmmount(existingPurchase.getPaidAmmount()+purchase.getPaidAmmount());
-existingPurchase.setRemaining(existingPurchase.getRemaining()-purchase.getPaidAmmount());
-purchaseRepository.save(existingPurchase);
-return "Updated";
+         PurchaseModel existingPurchase = purchaseService.getById(purchase.getId());
+             existingPurchase.setPaidAmmount(existingPurchase.getPaidAmmount()+purchase.getPaidAmmount());
+             existingPurchase.setRemaining(existingPurchase.getRemaining()-purchase.getPaidAmmount());
+             purchaseRepository.save(existingPurchase);
+             return "Updated";
     }
 }

@@ -2,6 +2,7 @@ package com.trademate.project.Controller;
 
 import com.trademate.project.Model.CompanyModel;
 import com.trademate.project.Model.UserModel;
+import com.trademate.project.Repository.CompanyRepository;
 import com.trademate.project.Service.CompanyService;
 import com.trademate.project.Service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,30 +20,25 @@ public class CompanyController {
     private CompanyService companyService;
     @Autowired
     private UserService userService;
+    @Autowired
+    private CompanyRepository companyRepository;
 
 
     @PostMapping("/add")
     public ResponseEntity<CompanyModel> addCompany( @RequestBody CompanyModel company){
         company.setCompanyName(company.getCompanyName().trim());
-        company.getUser().setId(userService.getByEmail(company.getEmail()).getId());
+        System.out.println(company.getCompanyName().trim());
         return companyService.adddCompany(company);
     }
-    @GetMapping("/all")
-    public List<CompanyModel> getAll(){
-        return companyService.getAllCompany();
-    }
-    @PostMapping("/byuser/{email}")
-    public List<CompanyModel> getByUserId(@PathVariable String email){
-        UserModel user = userService.getByEmail(email);
-        return companyService.getByUserId(user.getId());
-    }
-    @PostMapping("/byname/{name}")
-    public CompanyModel getByName(@PathVariable String name){
-        return companyService.getByName(name);
+    @GetMapping("/all/{userId}")
+    public List<CompanyModel> getAllByUser(@PathVariable long userId){
+        UserModel userModel =new UserModel();
+        userModel.setId(userId);
+        return companyService.getAllCompanyByUser(userModel);
     }
     @PutMapping("/update")
-    public String updateCompany(@RequestBody CompanyModel company){
-        CompanyModel existingCompany = companyService.getByCompanyId(company.getCompanyId());
+    public CompanyModel updateCompany(@RequestBody CompanyModel company){
+        CompanyModel existingCompany = companyRepository.findByCompanyId(company.getCompanyId());
         if(company.getCompanyName().length()>1){
             existingCompany.setCompanyName(company.getCompanyName());
         }
@@ -67,10 +63,7 @@ public class CompanyController {
         if(company.getCountry().length()>1){
             existingCompany.setCountry(company.getCountry());
         }
-        return companyService.updateCompany(existingCompany);
+        return companyRepository.save(existingCompany);
     }
-    @PostMapping("/companyByNameEmail")
-    public CompanyModel getCompanyByNameEmail(@RequestBody CompanyModel company){
-        return companyService.getByCompanyNameAndEmail(company.getCompanyName(),company.getEmail());
-    }
+
 }

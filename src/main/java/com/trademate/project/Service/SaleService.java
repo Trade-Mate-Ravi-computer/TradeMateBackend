@@ -1,9 +1,7 @@
 package com.trademate.project.Service;
 
-import com.trademate.project.Model.MonthYearModel;
-import com.trademate.project.Model.QuarterMonthModel;
-import com.trademate.project.Model.ReceivedMoneyModel;
-import com.trademate.project.Model.SaleModel;
+import com.trademate.project.Model.*;
+import com.trademate.project.Repository.CompanyRepository;
 import com.trademate.project.Repository.SaleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -22,6 +20,8 @@ public class SaleService {
     private CompanyService companyService;
     @Autowired
     private RecevivedMoneyService recevivedMoneyService;
+    @Autowired
+    private CompanyRepository companyRepository;
 
     public SaleService(SaleRepository saleRepository) {
         this.saleRepository = saleRepository;
@@ -29,21 +29,6 @@ public class SaleService {
 
 
     public SaleModel addSale(SaleModel saleModel){
-        saleModel.setTotalAmmount(saleModel.getQuantity()*saleModel.getRate());
-        saleModel.setRemaining(saleModel.getTotalAmmount()-saleModel.getReceivedAmmount());
-       if(companyService.getByCompanyNameAndEmail(saleModel.getCompanyName(),saleModel.getEmail()).getGstType()=="Regular"){
-           float gst= (saleModel.getTotalAmmount()-((float)saleModel.getTotalAmmount()*100)/(100+stockItemService.getByName(saleModel.getItemName()).getGstInPercent()));
-           saleModel.setGstInRupee(gst);
-       }else{
-           saleModel.setGstInRupee((float)saleModel.getTotalAmmount()/100);
-       }
-        int pr = saleModel.getTotalAmmount()-saleModel.getQuantity()*(stockItemService.getByName(saleModel.getItemName()).getPurchasePrice());
-        saleModel.setProfit(pr);
-        ReceivedMoneyModel receivedMoneyModel = new ReceivedMoneyModel();
-        receivedMoneyModel.setDate(saleModel.getDate());
-        receivedMoneyModel.setAmount(saleModel.getReceivedAmmount());
-        receivedMoneyModel.setCustomerName(saleModel.getCustomerName());
-        recevivedMoneyService.addMoney(receivedMoneyModel);
         return saleRepository.save(saleModel);
     }
     public List<SaleModel> allSale(){
@@ -52,43 +37,51 @@ public class SaleService {
     public SaleModel getSaleById(long id){
         return saleRepository.findById(id).orElseThrow();
     }
-    public String updateSales(SaleModel newSale,long id){
-        saleRepository.findById(id).map(sale->{
-            ReceivedMoneyModel receivedMoneyModel = new ReceivedMoneyModel();
-receivedMoneyModel.setDate(LocalDate.now());
-receivedMoneyModel.setAmount(newSale.getReceivedAmmount());
-receivedMoneyModel.setCustomerName(sale.getCustomerName());
-recevivedMoneyService.addMoney(receivedMoneyModel);
-            sale.setReceivedAmmount(sale.getReceivedAmmount()+newSale.getReceivedAmmount());
-            sale.setRemaining(sale.getRemaining()-newSale.getReceivedAmmount());
-            return saleRepository.save(sale);
-        }).orElseThrow(()->new UsernameNotFoundException("User not Found "));
-        return "Updated";
-    }
+//    public String updateSales(SaleModel newSale,long id){
+//        saleRepository.findById(id).map(sale->{
+//            ReceivedMoneyModel receivedMoneyModel = new ReceivedMoneyModel();
+//receivedMoneyModel.setDate(LocalDate.now());
+//receivedMoneyModel.setAmount(newSale.getReceivedAmmount());
+//receivedMoneyModel.setCustomerName(sale.getCustomerName());
+//recevivedMoneyService.addMoney(receivedMoneyModel);
+//            sale.setReceivedAmmount(sale.getReceivedAmmount()+newSale.getReceivedAmmount());
+//            sale.setRemaining(sale.getRemaining()-newSale.getReceivedAmmount());
+//            return saleRepository.save(sale);
+//        }).orElseThrow(()->new UsernameNotFoundException("User not Found "));
+//        return "Updated";
+//    }
     public String deleteSale(long id){
         saleRepository.deleteById(id);
         return  "Deleted";
     }
-    public Object sumOfProfits(int month,int year,String companyName,String email){
-        return saleRepository.sumOfRemainingByMonth(month,year,companyName,email);
+    public Object sumOfProfits(int month,int year,long companyId){
+        CompanyModel company =new CompanyModel();
+        company.setCompanyId(companyId);
+        return saleRepository.sumOfRemainingByMonth(month,year,company);
     }
-    public List<SaleModel> getByCustomerName(String customerName){
-        return saleRepository.findByCustomerName(customerName);
+    public List<SaleModel> getByCustomerName(CustomerModel customerName){
+        return saleRepository.findByCustomer(customerName);
     }
-    public int getRemainingByCustomer(String customerName){
-        return saleRepository.sumOfTotalRemainingByCustomer(customerName);
+    public int getRemainingByCustomer(CustomerModel  customer){
+//        return saleRepository.sumOfTotalRemainingCustomer(customer);
+        return 10;
     }
     public List<SaleModel> salesWithRemainingBalance(){
         return saleRepository.salesWithRemainingBalance();
     }
     public List<SaleModel> grtById(long id){
-       SaleModel sale = saleRepository.findById(id).orElseThrow(()->new UsernameNotFoundException("Not Found"));
-        return saleRepository.findByNameAndDate(sale.getCustomerName(),sale.getDate(),sale.getEmail());
+//       SaleModel sale = saleRepository.findById(id).orElseThrow(()->new UsernameNotFoundException("Not Found"));
+//        return saleRepository.findByNameAndDate(sale.getCustomerName(),sale.getDate(),sale.getEmail());r
+        return null;
     }
     public  int totalAmmountOfQuarter(QuarterMonthModel monthModel){
-        return saleRepository.sumOfTotalAmountOfQuarter(monthModel.getMonth1(),monthModel.getMonth2(),monthModel.getMonth3(),monthModel.getYear(),monthModel.getCompanyName(),monthModel.getEmail());
+        CompanyModel company =new CompanyModel();
+        company.setCompanyId(monthModel.getCompanyId());
+        return saleRepository.getTotalAmountForQuarter(monthModel.getMonth1(),monthModel.getMonth2(),monthModel.getMonth3(),monthModel.getYear(),company);
     }
     public int totalAmmountOfMonth(MonthYearModel monthModel){
-        return saleRepository.sumOfTotalAmountOfMonth(monthModel.getMonth(),monthModel.getYear(),monthModel.getCompanyName(),monthModel.getEmail());
+        CompanyModel company =new CompanyModel();
+        company.setCompanyId(monthModel.getCompanyId());
+        return saleRepository.sumOfTotalAmountOfMonth(monthModel.getMonth(),monthModel.getYear(),company);
     }
 }
