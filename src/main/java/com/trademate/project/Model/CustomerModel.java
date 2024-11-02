@@ -11,7 +11,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "Customers",uniqueConstraints = {
-        @UniqueConstraint(columnNames = {"customerName","companyName"})
+        @UniqueConstraint(columnNames = {"customerName","company_id"})
 })
 @Getter
 @Setter
@@ -32,6 +32,7 @@ public class CustomerModel {
     private String gstType;
     private long mobile;
     @ManyToOne
+    @JoinColumn(name = "company_id", nullable = false)
     private CompanyModel company;
     @OneToMany(mappedBy ="customer")
     @JsonIgnore

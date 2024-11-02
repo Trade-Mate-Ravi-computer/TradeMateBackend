@@ -20,11 +20,13 @@ public class StockItemModel {
     @Column(unique = true,nullable = false)
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long itemId;
+    @Column(unique = true,nullable = false)
     private String itemName;
     private int purchasePrice;
     private String category;
     private int gstInPercent;
     private int quantity;
+    private String sku;
     @ManyToOne
     private CompanyModel company;
     @OneToMany(mappedBy = "item")

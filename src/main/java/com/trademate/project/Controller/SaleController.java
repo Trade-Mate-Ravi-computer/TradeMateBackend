@@ -13,7 +13,7 @@ import java.time.LocalDate;
 import java.util.*;
 
 @RestController
-@CrossOrigin(value = {"http://localhost:3000","https://ravicomputer.online/","http://13.60.161.70/"})
+@CrossOrigin(value = {"http://localhost:3000","https://ravicomputer.online/","https://trade-mate-fr-shadcn.vercel.app/"})
 @RequestMapping("/sales")
 public class SaleController {
     private SaleService saleService;
@@ -30,6 +30,8 @@ private StockItemService stockItemService;
 @Autowired
 private ExpenseService expenseService;
 @Autowired
+private  StockItemRepository stockItemRepository;
+@Autowired
 private FeedbackRepository feedbackRepository;
 @Autowired
 private UserService userService;
@@ -42,6 +44,11 @@ private RecevivedMoneyService recevivedMoneyService;
 
     @PostMapping("/addSale")
     public ResponseEntity<SaleModel> addSale(@RequestBody SaleModel saleModel){
+        saleModel.setTotalAmmount(saleModel.getQuantity()*saleModel.getRate());
+        saleModel.setRemaining((saleModel.getTotalAmmount()-saleModel.getReceivedAmmount()));
+        StockItemModel stockItemModel=stockItemRepository.findByItemId(saleModel.getItem().getItemId());
+        saleModel.setProfit(saleModel.getTotalAmmount()-stockItemModel.getPurchasePrice()*saleModel.getQuantity());
+        saleModel.setGstInRupee((double) (saleModel.getTotalAmmount() * stockItemModel.getGstInPercent()) /100);
          return  new ResponseEntity<SaleModel>(saleService.addSale(saleModel), HttpStatus.CREATED);
     }
     @PostMapping("/allsaledetails")

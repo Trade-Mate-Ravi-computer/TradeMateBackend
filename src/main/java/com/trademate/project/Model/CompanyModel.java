@@ -28,6 +28,8 @@ public class CompanyModel {
     private String gstIn;
     private String gstType;
     private String state;
+    private String district;
+    private String locality;
     private String country;
     private int pinCode;
     private long mobile;

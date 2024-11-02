@@ -14,7 +14,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/company")
-@CrossOrigin(value = {"http://localhost:3000","https://ravicomputer.online/","http://13.60.161.70/"})
+@CrossOrigin(value = {"http://localhost:3000","https://ravicomputer.online/","https://trade-mate-fr-shadcn.vercel.app/"})
 public class CompanyController {
     @Autowired
     private CompanyService companyService;
@@ -35,6 +35,11 @@ public class CompanyController {
         UserModel userModel =new UserModel();
         userModel.setId(userId);
         return companyService.getAllCompanyByUser(userModel);
+    }
+
+    @GetMapping("/getCompanyBYId/{companyId}")
+    public CompanyModel getCompamnyByCompanyId(@PathVariable long companyId){
+        return companyRepository.findByCompanyId(companyId);
     }
     @PutMapping("/update")
     public CompanyModel updateCompany(@RequestBody CompanyModel company){
@@ -62,6 +67,12 @@ public class CompanyController {
         }
         if(company.getCountry().length()>1){
             existingCompany.setCountry(company.getCountry());
+        }
+        if(company.getLocality().length()>1){
+            existingCompany.setLocality(company.getLocality());
+        }
+        if(company.getDistrict().length()>1){
+            existingCompany.setDistrict(company.getDistrict());
         }
         return companyRepository.save(existingCompany);
     }

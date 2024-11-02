@@ -33,7 +33,7 @@ import java.util.Optional;
 //import java.util.logging.Logger;
 
 @RestController
-@CrossOrigin(value = {"http://localhost:3000","https://ravicomputer.online/","http://13.60.161.70/"})
+@CrossOrigin(value = {"http://localhost:3000","https://ravicomputer.online/","https://trade-mate-fr-shadcn.vercel.app/"})
 @RequestMapping("/auth")
 public class AuthController {
  @Autowired
@@ -63,6 +63,9 @@ this.doAuthenticate(jwtRequest.getEmail(),jwtRequest.getPassword());
      UserDetails userDetails = userDetailsService.loadUserByUsername(jwtRequest.getEmail());
      String token =this.jwtHelper.generateToken(userDetails);
      JwtResponse response = JwtResponse.builder().jwtToken(token).userNAme(userDetails.getUsername()).build();
+     UserModel user =userRepository.findByEmail(jwtRequest.getEmail());
+     response.setName(user.getName());
+     response.setUserId(user.getId());
      return new ResponseEntity<>(response, HttpStatus.OK);
  }
 @PostMapping("/sign-up")

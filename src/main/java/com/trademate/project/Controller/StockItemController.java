@@ -14,7 +14,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/stock")
-@CrossOrigin(value = {"http://localhost:3000","https://ravicomputer.online/","http://13.60.161.70/"})
+@CrossOrigin(value = {"http://localhost:3000","https://ravicomputer.online/","https://trade-mate-fr-shadcn.vercel.app/"})
 public class StockItemController {
     @Autowired
     private StockItemService service;
@@ -26,8 +26,9 @@ private CompanyRepository companyRepository;
     public ResponseEntity<StockItemModel> addStock(@RequestBody StockItemModel item){
         return service.addStock(item);
     }
-    @PostMapping("/all")
-    public List<StockItemModel> getAllByCompanyName(@RequestBody CompanyModel company){
+    @GetMapping("/all/{companyId}")
+    public List<StockItemModel> getAllByCompanyName(@PathVariable long companyId){
+            CompanyModel company=companyRepository.findByCompanyId(companyId);
         return repository.findByCompany(company);
     }
     @PutMapping("/updateStock")

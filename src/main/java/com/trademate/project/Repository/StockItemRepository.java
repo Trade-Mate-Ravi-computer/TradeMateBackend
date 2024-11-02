@@ -9,5 +9,6 @@ import java.util.List;
 
 public interface StockItemRepository extends JpaRepository<StockItemModel,String> {
     public StockItemModel findByItemName(String itemName);
+    StockItemModel findByItemId(long itemId);
     public List<StockItemModel> findByCompany(CompanyModel company);
 }
