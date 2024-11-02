@@ -1,19 +1,27 @@
 package com.trademate.project.Model;
 
-import lombok.Builder;
+import lombok.*;
 
 @Builder
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class JwtResponse {
     private String jwtToken;
     private String userNAme;
 
-    public JwtResponse() {
+    public String getName() {
+        return name;
     }
 
-    public JwtResponse(String jwtToken, String userNAme) {
-        this.jwtToken = jwtToken;
-        this.userNAme = userNAme;
+    public void setName(String name) {
+        this.name = name;
     }
+
+    private String name;
+    private long userId;
+
 
     public String getJwtToken() {
         return jwtToken;

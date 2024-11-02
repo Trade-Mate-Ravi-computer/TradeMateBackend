@@ -28,7 +28,6 @@ public class SaleModel {
     private int totalAmmount;
     private int remaining;
     private int profit;
-    private long customerMobile;
     @ManyToOne
     private CompanyModel company;
     @ManyToOne
