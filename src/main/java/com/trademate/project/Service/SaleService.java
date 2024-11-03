@@ -70,9 +70,9 @@ public class SaleService {
         return saleRepository.salesWithRemainingBalance();
     }
     public List<SaleModel> grtById(long id){
-//       SaleModel sale = saleRepository.findById(id).orElseThrow(()->new UsernameNotFoundException("Not Found"));
-//        return saleRepository.findByNameAndDate(sale.getCustomerName(),sale.getDate(),sale.getEmail());r
-        return null;
+       SaleModel sale = saleRepository.findById(id).get();
+        System.out.println(sale.getDate().toString());
+        return saleRepository.findByCustomerAndDate(sale.getCustomer(),sale.getDate());
     }
     public  int totalAmmountOfQuarter(QuarterMonthModel monthModel){
         CompanyModel company =new CompanyModel();

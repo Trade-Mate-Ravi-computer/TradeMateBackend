@@ -25,9 +25,10 @@ public class StockItemService {
     public StockItemModel getByName(String item){
         return stockItemRepository.findByItemName(item);
     }
-    public String updateItem(int price,String itemName ){
-        StockItemModel existingItem = stockItemRepository.findByItemName(itemName);
+    public String updateItem(int price,long itemId,String itemName){
+        StockItemModel existingItem = stockItemRepository.findByItemId(itemId);
         existingItem.setPurchasePrice(price);
+        existingItem.setItemName(itemName);
         stockItemRepository.save(existingItem);
         return "Updated";
     }
