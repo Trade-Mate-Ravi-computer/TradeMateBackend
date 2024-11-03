@@ -6,6 +6,7 @@ import com.trademate.project.Repository.CompanyRepository;
 import com.trademate.project.Service.CompanyService;
 import com.trademate.project.Service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -75,6 +76,11 @@ public class CompanyController {
             existingCompany.setDistrict(company.getDistrict());
         }
         return companyRepository.save(existingCompany);
+    }
+
+    @PostMapping("/updateImage")
+    public ResponseEntity<?> updateImageAndAccountDetials(@RequestBody CompanyModel companyModel){
+        return  new ResponseEntity<>(companyRepository.save(companyModel), HttpStatus.ACCEPTED);
     }
 
 }

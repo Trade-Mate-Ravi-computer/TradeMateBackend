@@ -33,6 +33,6 @@ private CompanyRepository companyRepository;
     }
     @PutMapping("/updateStock")
     public String updateStock(@RequestBody StockItemModel item){
-            return service.updateItem(item.getPurchasePrice()!=0? item.getPurchasePrice() : 0,item.getItemName());
+            return service.updateItem(item.getPurchasePrice()!=0? item.getPurchasePrice() : 0,item.getItemId(),item.getItemName());
     }
 }

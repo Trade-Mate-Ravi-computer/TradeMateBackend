@@ -34,6 +34,12 @@ public class CompanyModel {
     private int pinCode;
     private long mobile;
     private  String email;
+    @Lob
+    @Column(name = "image", columnDefinition = "MEDIUMTEXT")
+    private String image;
+    private String bankName;
+    private String accountNumber;
+    private String ifscCode;
     @ManyToOne
     private UserModel user;
     @OneToMany(mappedBy = "company")

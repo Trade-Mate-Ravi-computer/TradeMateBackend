@@ -30,7 +30,7 @@ public interface SaleRepository extends JpaRepository<SaleModel, Long> {
     @Query("select sum(s.profit) as sumOfProfit, sum(s.remaining) as sumOfRemaining, sum(s.totalAmmount) as sumOfTotalAmmount from SaleModel s where s.company = ?1")
     Map<String,Integer> sumOfTotalRemaining(CompanyModel company);
     @Query("select s from SaleModel s where s.customer = ?1 and date = ?2")
-    List<SaleModel> findByNameAndDate(CustomerModel customer, LocalDate date);
+    List<SaleModel> findByCustomerAndDate(CustomerModel customer, LocalDate date);
     @Query("select sum(s.totalAmmount) from SaleModel s where " +
             "(month(s.date) = :month1 and year(s.date) = :year and s.company = :company) or " +
             "(month(s.date) = :month2 and year(s.date) = :year and s.company = :company) or " +

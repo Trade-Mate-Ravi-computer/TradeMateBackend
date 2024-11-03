@@ -1,5 +1,6 @@
 package com.trademate.project.Controller;
 
+import com.trademate.project.DTO.InvoiceDto;
 import com.trademate.project.Model.*;
 import com.trademate.project.Repository.*;
 import com.trademate.project.Service.*;
@@ -59,10 +60,14 @@ private RecevivedMoneyService recevivedMoneyService;
     public SaleModel getSaleById(@PathVariable long id){
         return saleService.getSaleById(id);
     }
-//    @PutMapping("/editsale/{id}")
-//    public String editSale(@RequestBody SaleModel saleModel,@PathVariable long id){
-//        return saleService.updateSales(saleModel,id);
-//    }
+    @PutMapping("/editsale")
+    public String editSale(@RequestBody SaleModel saleModel){
+        SaleModel saleModel1=saleRepository.findById(saleModel.getId()).get();
+        saleModel1.setReceivedAmmount(saleModel.getReceivedAmmount()+saleModel1.getReceivedAmmount());
+        saleModel1.setRemaining(saleModel1.getRemaining()-saleModel.getReceivedAmmount());
+        saleRepository.save(saleModel1);
+        return "Updated";
+    }
     @DeleteMapping("/delete/{id}")
     public String deleteSale(@PathVariable long id) {
       Optional<SaleModel> saleModel=saleRepository.findById(id);
@@ -110,8 +115,21 @@ private RecevivedMoneyService recevivedMoneyService;
         return saleRepository.sumOfRemainingByYear(date.getYear(),companyModel);
     }
     @PostMapping("/byid/{id}")
-    public List<SaleModel> findById(@PathVariable long id){
-        return saleService.grtById(id);
+    public InvoiceDto findById(@PathVariable long id){
+        SaleModel saleModel =saleRepository.findById(id).get();
+        InvoiceDto invoiceDto=new InvoiceDto();
+        CustomerModel customerModel =saleModel.getCustomer();
+        invoiceDto.setCustomerModel(customerModel);
+        List<SaleModel> saleModels = saleService.grtById(id);
+        Double totalAmount = (double) 0;
+        for(int i=0;i<saleModels.size();i++){
+            saleModels.get(i).setCustomer(null);
+            saleModels.get(i).setCompany(null);
+            totalAmount+=saleModels.get(i).getTotalAmmount();
+        }
+          invoiceDto.setSales(saleModels);
+          invoiceDto.setTotalAmount(totalAmount);
+        return invoiceDto;
     }
     @PostMapping("/quart")
     public int totalAmountOfQuarter(@RequestBody QuarterMonthModel quarterMonthModel){
