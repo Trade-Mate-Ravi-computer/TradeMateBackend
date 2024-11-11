@@ -3,6 +3,7 @@ package com.trademate.project.Controller;
 import com.trademate.project.Model.CompanyModel;
 import com.trademate.project.Model.PurchaseModel;
 import com.trademate.project.Model.StockItemModel;
+import com.trademate.project.Repository.CompanyRepository;
 import com.trademate.project.Repository.PurchaseRepository;
 import com.trademate.project.Service.CompanyService;
 import com.trademate.project.Service.PurchaseService;
@@ -28,19 +29,25 @@ private StockItemService stockItemService;
 private PurchaseRepository purchaseRepository;
 @Autowired
 private SellerService sellerService;
+@Autowired
+private CompanyRepository companyRepository;
     @PostMapping("/add")
     public ResponseEntity<PurchaseModel> addPurchase(@RequestBody PurchaseModel purchase){
+        purchase.setTotalAmount(purchase.getQuantity()*purchase.getPrice());
+        purchase.setRemaining(purchase.getTotalAmount()-purchase.getPaidAmount());
+        purchase.setGstInRupee((double) (purchase.getTotalAmount() * 18) /100);
             return purchaseService.addPurchase(purchase);
     }
-    @PostMapping("/getbycompany")
-    public List<PurchaseModel> getByCompany(@RequestBody CompanyModel company){
+    @GetMapping("/getbycompany/{companyId}")
+    public List<PurchaseModel> getByCompany(@PathVariable long companyId){
+        CompanyModel company =companyRepository.findByCompanyId(companyId);
         return purchaseRepository.findAllByCompany(company);
     }
     @PostMapping("/update")
     public String updateById(@RequestBody PurchaseModel purchase){
          PurchaseModel existingPurchase = purchaseService.getById(purchase.getId());
-             existingPurchase.setPaidAmmount(existingPurchase.getPaidAmmount()+purchase.getPaidAmmount());
-             existingPurchase.setRemaining(existingPurchase.getRemaining()-purchase.getPaidAmmount());
+             existingPurchase.setPaidAmount(existingPurchase.getPaidAmount()+purchase.getPaidAmount());
+             existingPurchase.setRemaining(existingPurchase.getRemaining()-purchase.getPaidAmount());
              purchaseRepository.save(existingPurchase);
              return "Updated";
     }

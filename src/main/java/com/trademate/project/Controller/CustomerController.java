@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -22,6 +23,7 @@ public class CustomerController {
 
     @PostMapping("/add")
     public ResponseEntity<CustomerModel> addCust(@RequestBody CustomerModel customerModel){
+        customerModel.setAddDate(LocalDate.now());
         return customerService.addCustomer(customerModel);
     }
 

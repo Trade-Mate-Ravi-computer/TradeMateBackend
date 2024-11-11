@@ -23,12 +23,12 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import com.razorpay.RazorpayClient;
 
+import java.security.SecureRandom;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 //import java.util.logging.Logger;
 
@@ -56,18 +56,71 @@ private SaleRepository saleRepository;
 private ExpenseRepository expenseRepository;
 @Autowired
 private OrdersRepository ordersRepository;
+
+
+    private static final int OTP_LENGTH = 6;
+    private final Map<String, String> otpStore = new HashMap<>();
+    private final Map<String, Long> otpExpiry = new HashMap<>();
+    private static final long OTP_EXPIRATION_MS = TimeUnit.MINUTES.toMillis(5); // OTP expires in 5 minutes
+    private final SecureRandom secureRandom = new SecureRandom();
  private Logger logger = LoggerFactory.getLogger(AuthController.class);
-    @PostMapping("/login")
- public ResponseEntity<JwtResponse> login(@RequestBody JwtRequest jwtRequest){
-this.doAuthenticate(jwtRequest.getEmail(),jwtRequest.getPassword());
-     UserDetails userDetails = userDetailsService.loadUserByUsername(jwtRequest.getEmail());
-     String token =this.jwtHelper.generateToken(userDetails);
-     JwtResponse response = JwtResponse.builder().jwtToken(token).userNAme(userDetails.getUsername()).build();
-     UserModel user =userRepository.findByEmail(jwtRequest.getEmail());
-     response.setName(user.getName());
-     response.setUserId(user.getId());
-     return new ResponseEntity<>(response, HttpStatus.OK);
+
+ @PostMapping("/generate-otp")
+ public String generateOtpForLogin(@RequestBody JwtRequest jwtRequest){
+   doAuthenticate(jwtRequest.getEmail(),jwtRequest.getPassword());
+   generateOtp(jwtRequest.getEmail());
+   return "Otp Sent";
  }
+
+    public void generateOtp(String email) {
+        // Generate a random 6-digit OTP
+        String otp = String.format("%06d", secureRandom.nextInt(999999));
+
+        otpStore.put(email, otp);
+        otpExpiry.put(email, System.currentTimeMillis() + OTP_EXPIRATION_MS);
+        String message ="Your log in Otp is "+otp+ " don not share this otp any unauthorized person";
+        emailService.sendEmail(email,"Your loginOtp  ....",message);
+        UserModel userModel=userRepository.findByEmail(email);
+        userModel.setOtp(otp);
+        userModel.setOtpGenerationTime(LocalTime.now());
+        userRepository.save(userModel);
+    }
+
+ @PostMapping("/login")
+ public ResponseEntity<?> login(@RequestBody JwtRequest jwtRequest){
+     String validation =validateOtp(jwtRequest);
+     if(validation=="Otp Validation Successful"){
+         UserDetails userDetails = userDetailsService.loadUserByUsername(jwtRequest.getEmail());
+         String token =this.jwtHelper.generateToken(userDetails);
+         JwtResponse response = JwtResponse.builder().jwtToken(token).userNAme(userDetails.getUsername()).build();
+         UserModel user =userRepository.findByEmail(jwtRequest.getEmail());
+         response.setName(user.getName());
+         response.setUserId(user.getId());
+         return new ResponseEntity<>(response, HttpStatus.OK);
+     }else {
+         return ResponseEntity.ok(validation);
+     }
+ }
+
+    public String validateOtp(@RequestBody JwtRequest jwtRequest) {
+     doAuthenticate(jwtRequest.getEmail(),jwtRequest.getPassword());
+     UserModel userModel=userRepository.findByEmail(jwtRequest.getEmail());
+     if(Integer.parseInt(userModel.getOtp())==jwtRequest.getOtp()){
+         if(isOtpExpired(userModel)){
+             return "Otp Expired";
+         }else{
+             return "Otp Validation Successful";
+         }
+     }else{
+         return "Otp is Incorrect";
+     }
+    }
+
+    public boolean isOtpExpired(UserModel userModel) {
+        LocalTime otpGenerationTime = userModel.getOtpGenerationTime();
+        LocalTime expirationTime = otpGenerationTime.plus(5, ChronoUnit.MINUTES);
+        return LocalTime.now().isAfter(expirationTime);
+    }
 @PostMapping("/sign-up")
 public UserModel addUser(@RequestBody UserModel user){
     user.setSubscribed(true);
@@ -81,26 +134,23 @@ public UserModel addUser(@RequestBody UserModel user){
 public String setVerification(@PathVariable String email){
        return userService.setVerification(email);
 }
+
+
   private void doAuthenticate(String email,String password){
       UsernamePasswordAuthenticationToken authentication =new UsernamePasswordAuthenticationToken(email,password);
       try{
           authenticationManager.authenticate(authentication);
       }catch(BadCredentialsException be){
 //          System.out.println(be);
-          throw new BadCredentialsException("Invailid User name of Password");
+          throw new BadCredentialsException("Invalid User name of Password");
       }
   }
   @Autowired
   private EmailService emailService;
-  @GetMapping("/sendemail")
-  public String sendMail(){
-        emailService.sendEmail("anamikamaurya460@gmail.com","Regaurding your Email Verification","Hi Anamika ji You are very cute and beautifull");
 
-        return "Email Sent";
-  }
 
     @PostMapping("/otp/{email}")
-    public String generateOtp(@PathVariable String email){
+    public String generateOtpForForgotPassword(@PathVariable String email){
         UserModel user =userService.getByEmail(email);
         String otp= RandomStringUtils.randomNumeric(6);
         if(user!=null){
@@ -201,8 +251,5 @@ public List<FeedbackModel> getAll(){
       System.out.println("Remaining Days  "+daysDifference);
     return "Subscription saved";
   }
-  @GetMapping("/hello")
-public String hellow(){
-    return "Hello World";
-  }
+
 }

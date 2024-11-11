@@ -83,4 +83,16 @@ public class CompanyController {
         return  new ResponseEntity<>(companyRepository.save(companyModel), HttpStatus.ACCEPTED);
     }
 
+
+    // Weekly report
+    @GetMapping("/report/weekly/{companyId}")
+    public ResponseEntity<List<Object[]>> getWeeklyReport(@PathVariable long companyId) {
+        System.out.println(companyId);
+       List<Object[]> weeklyReport = companyRepository.findAllSalesAndPurchases(companyId);
+        return ResponseEntity.ok(weeklyReport);
+    }
+
+
+
+
 }

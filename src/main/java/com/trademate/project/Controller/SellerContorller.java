@@ -35,7 +35,7 @@ public class SellerContorller {
         return service.getBySellerId(id);
     }
     @GetMapping("/all/{companyId}")
-    public List<SellerModel> getAll(long companyId) {
+    public List<SellerModel> getAll(@PathVariable long companyId) {
         CompanyModel companyModel =new CompanyModel();
          companyModel.setCompanyId(companyId);
          return sellerRepository.findByCompany(companyModel);

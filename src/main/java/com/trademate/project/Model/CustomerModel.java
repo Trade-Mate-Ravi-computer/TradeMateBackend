@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Entity
@@ -30,6 +31,7 @@ public class CustomerModel {
     private int pinCode;
     private String gstIn;
     private String gstType;
+    private LocalDate addDate;
     private long mobile;
     @ManyToOne
     @JoinColumn(name = "company_id", nullable = false)

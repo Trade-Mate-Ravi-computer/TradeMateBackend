@@ -22,8 +22,8 @@ public class PurchaseModel {
     private int price;
     private LocalDate date;
     private int quantity;
-    private int totalAmmount;
-    private int paidAmmount;
+    private int totalAmount;
+    private int paidAmount;
     private double gstInRupee;
     private int remaining;
     @ManyToOne
