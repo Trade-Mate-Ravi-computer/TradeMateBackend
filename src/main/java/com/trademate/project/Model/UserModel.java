@@ -10,6 +10,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.Collection;
 import java.util.List;
 
@@ -33,6 +34,7 @@ public class UserModel implements UserDetails {
     private LocalDate subDate;
     private LocalDate expDate;
     private String otp;
+    private LocalTime otpGenerationTime;
     @OneToMany(mappedBy = "user")
     @JsonIgnore
     private List<CompanyModel> company;
