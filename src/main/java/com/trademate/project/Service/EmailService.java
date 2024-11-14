@@ -25,6 +25,7 @@ public class EmailService {
         message.setCc("mauryaravi599@gmail.com");
         message.setSubject(subject);
         message.setText(text);
+        System.out.println(text);
         javaMailSender.send(message);
     }
 
