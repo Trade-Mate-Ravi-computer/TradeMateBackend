@@ -52,6 +52,19 @@ private RecevivedMoneyService recevivedMoneyService;
         saleModel.setGstInRupee((double) (saleModel.getTotalAmmount() * stockItemModel.getGstInPercent()) /100);
          return  new ResponseEntity<SaleModel>(saleService.addSale(saleModel), HttpStatus.CREATED);
     }
+
+    @PostMapping("/addMultipleSale")
+    public void addMultipleSale(@RequestBody List<SaleModel> saleModels){
+        for(int i=0;i<saleModels.size();i++){
+            SaleModel saleModel=saleModels.get(i);
+            saleModel.setTotalAmmount(saleModel.getQuantity()*saleModel.getRate());
+            saleModel.setRemaining((saleModel.getTotalAmmount()-saleModel.getReceivedAmmount()));
+            StockItemModel stockItemModel=stockItemRepository.findByItemId(saleModel.getItem().getItemId());
+            saleModel.setProfit(saleModel.getTotalAmmount()-stockItemModel.getPurchasePrice()*saleModel.getQuantity());
+            saleModel.setGstInRupee((double) (saleModel.getTotalAmmount() * stockItemModel.getGstInPercent()) /100);
+        }
+        saleRepository.saveAll(saleModels);
+    }
     @PostMapping("/allsaledetails")
     public List<SaleModel> getAllSale(@RequestBody CompanyModel company){
         return saleRepository.findAllByCompany(company);

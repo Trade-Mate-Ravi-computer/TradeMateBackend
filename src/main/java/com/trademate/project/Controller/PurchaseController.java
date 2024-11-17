@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -32,11 +33,15 @@ private SellerService sellerService;
 @Autowired
 private CompanyRepository companyRepository;
     @PostMapping("/add")
-    public ResponseEntity<PurchaseModel> addPurchase(@RequestBody PurchaseModel purchase){
-        purchase.setTotalAmount(purchase.getQuantity()*purchase.getPrice());
-        purchase.setRemaining(purchase.getTotalAmount()-purchase.getPaidAmount());
-        purchase.setGstInRupee((double) (purchase.getTotalAmount() * 18) /100);
-            return purchaseService.addPurchase(purchase);
+    public void addPurchase(@RequestBody List<PurchaseModel> purchases){
+      for(int i=0;i<purchases.size();i++){
+          PurchaseModel purchase =purchases.get(i);
+          purchase.setTotalAmount(purchase.getQuantity()*purchase.getPrice());
+          purchase.setRemaining(purchase.getTotalAmount()-purchase.getPaidAmount());
+          purchase.setGstInRupee((double) (purchase.getTotalAmount() * 18) /100);
+
+      }
+             purchaseRepository.saveAll(purchases);
     }
     @GetMapping("/getbycompany/{companyId}")
     public List<PurchaseModel> getByCompany(@PathVariable long companyId){
