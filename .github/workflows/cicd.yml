@@ -24,7 +24,7 @@ jobs:
 
   deploy: 
     needs: build
-    runs-on: ec2-runner # Replace 'ec2-runner' with the actual label you assigned to your runner
+    runs-on: self-hosted # Replace 'ec2-runner' with the actual label you assigned to your runner
     steps:
       - name: Pull Image from Docker Hub
         run: docker pull badboy2977/tdbackend:latest 
