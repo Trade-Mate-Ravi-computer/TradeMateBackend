@@ -1,5 +1,7 @@
 package com.trademate.project.Controller;
 
+import com.trademate.project.DTO.MonthlySalesPurchasesDto;
+import com.trademate.project.DTO.ProductSalePurchaseDto;
 import com.trademate.project.Model.CompanyModel;
 import com.trademate.project.Model.UserModel;
 import com.trademate.project.Repository.CompanyRepository;
@@ -92,7 +94,12 @@ public class CompanyController {
         return ResponseEntity.ok(weeklyReport);
     }
 
-
-
-
+@GetMapping("/getCompanyProductReport/{companyId}")
+    public List<ProductSalePurchaseDto> getProductReport(@PathVariable long companyId){
+        return companyRepository.findDistinctProductSalesAndPurchases(companyId);
+}
+@GetMapping("/getCompanySalePurchaseAmount/{companyId}")
+    public List<MonthlySalesPurchasesDto> getOCmpanyMonthlySalesPurchaseReport(@PathVariable long companyId){
+        return companyRepository.findMonthlySalesAndPurchases(companyId);
+}
 }
