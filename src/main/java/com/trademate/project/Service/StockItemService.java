@@ -34,14 +34,14 @@ public class StockItemService {
     }
     public void updateQuantity(int quantity, String itemName) {
         StockItemModel existingItem = stockItemRepository.findByItemName(itemName);
-        int newQuantity = existingItem.getQuantity() + quantity;
+        int newQuantity = (int) (existingItem.getQuantity() + quantity);
         existingItem.setQuantity(newQuantity); // Add quantity to existing quantity
         System.out.println("Hello"+newQuantity);
         stockItemRepository.save(existingItem);
     }
     public void updateSaleQuantity(int quantity, String itemName) {
         StockItemModel existingItem = stockItemRepository.findByItemName(itemName);
-        int newQuantity = existingItem.getQuantity()-quantity;
+        int newQuantity = (int) (existingItem.getQuantity()-quantity);
         existingItem.setQuantity(newQuantity); // Add quantity to existing quantity
         stockItemRepository.save(existingItem);
     }

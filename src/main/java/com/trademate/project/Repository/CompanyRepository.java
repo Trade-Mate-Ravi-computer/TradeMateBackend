@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Map;
 
 public interface CompanyRepository extends JpaRepository<CompanyModel,Long> {
     List<CompanyModel> findByUser(UserModel userModel);
@@ -68,5 +69,53 @@ public interface CompanyRepository extends JpaRepository<CompanyModel,Long> {
     ORDER BY yearMonth.year, yearMonth.month
 """)
     List<MonthlySalesPurchasesDto> findMonthlySalesAndPurchases(Long companyId);
+
+    // Sales Reports
+    @Query("SELECT s.date AS date, SUM(s.totalAmmount) AS totalSales FROM SaleModel s WHERE s.company.companyId = :companyId GROUP BY s.date")
+    List<Map<String, Object>> getDailySalesReport(Long companyId);
+
+    @Query("SELECT MONTH(s.date) AS month, YEAR(s.date) AS year, SUM(s.totalAmmount) AS totalSales FROM SaleModel s WHERE s.company.companyId = :companyId GROUP BY YEAR(s.date), MONTH(s.date)")
+    List<Map<String, Object>> getMonthlySalesReport(Long companyId);
+
+//    @Query("SELECT c.customerName, SUM(s.totalAmmount) AS totalSpent FROM SaleModel s JOIN s.customer c WHERE s.company.companyId = :companyId GROUP BY c.customerName")
+//    List<Map<String, Object>> getCustomerWiseSalesReport(Long companyId);
+    @Query("SELECT COALESCE(c.customerName, 'Unknown') AS customerName, SUM(s.totalAmmount) AS totalSpent FROM SaleModel s JOIN s.customer c WHERE s.company.companyId = :companyId GROUP BY c.customerName")
+    List<Map<String, Object>> getCustomerWiseSalesReport(Long companyId);
+
+
+    // Purchase Reports
+    @Query("SELECT p.date AS date, SUM(p.totalAmount) AS totalPurchases FROM PurchaseModel p WHERE p.company.companyId = :companyId GROUP BY p.date")
+    List<Map<String, Object>> getDailyPurchaseReport(Long companyId);
+
+    @Query("SELECT MONTH(p.date) AS month, YEAR(p.date) AS year, SUM(p.totalAmount) AS totalPurchases FROM PurchaseModel p WHERE p.company.companyId = :companyId GROUP BY YEAR(p.date), MONTH(p.date)")
+    List<Map<String, Object>> getMonthlyPurchaseReport(Long companyId);
+
+    @Query("SELECT COALESCE(v.sellerName, 'Unknown') AS sellerName, SUM(p.totalAmount) AS totalSpent FROM PurchaseModel p JOIN p.seller v WHERE p.company.companyId = :companyId GROUP BY v.sellerName")
+    List<Map<String, Object>> getSellerWisePurchaseReport(Long companyId);
+
+    // Inventory Reports
+    @Query("SELECT si.itemName, si.quantity AS stockLeft, si.purchasePrice AS stockValue FROM StockItemModel si WHERE si.company.companyId = :companyId")
+    List<Object[]> getCurrentStockReport(Long companyId);
+
+    @Query("SELECT si.itemName, SUM(si.quantity) AS totalSold FROM StockItemModel si WHERE si.company.companyId = :companyId GROUP BY si.itemName")
+    List<Object[]> getProductWiseSalesReport(Long companyId);
+
+    // Financial Reports
+    @Query("SELECT SUM(s.totalAmmount) AS totalSales, SUM(p.totalAmount) AS totalPurchases, (SUM(s.totalAmmount) - SUM(p.totalAmount)) AS profit FROM SaleModel s, PurchaseModel p WHERE s.company.companyId = :companyId AND p.company.companyId = :companyId")
+    Map<String, Object> getProfitAndLossReport(Long companyId);
+
+    // Pending Payments Report
+    @Query("SELECT c.customerName, SUM(s.totalAmmount - s.receivedAmmount) AS pendingAmount FROM SaleModel s JOIN s.customer c WHERE s.company.companyId = :companyId AND (s.totalAmmount > s.receivedAmmount) GROUP BY c.customerName")
+    List<Object[]> getPendingPaymentsFromCustomers(Long companyId);
+
+    @Query("SELECT v.sellerName, SUM(p.totalAmount - p.paidAmount) AS pendingAmount FROM PurchaseModel p JOIN p.seller v WHERE p.company.companyId = :companyId AND (p.totalAmount > p.paidAmount) GROUP BY v.sellerName")
+    List<Map<String, Object>> getPendingPaymentsToVendors(Long companyId);
+
+    // Expense Reports
+    @Query("SELECT e.date AS date, SUM(e.amount) AS totalExpenses FROM ExpenseModel e WHERE e.company.companyId = :companyId GROUP BY e.date")
+    List<Map<String, Object>> getDailyExpenseReport(Long companyId);
+
+    @Query("SELECT MONTH(e.date) AS month, YEAR(e.date) AS year, SUM(e.amount) AS totalExpenses FROM ExpenseModel e WHERE e.company.companyId = :companyId GROUP BY YEAR(e.date), MONTH(e.date)")
+    List<Map<String, Object>> getMonthlyExpenseReport(Long companyId);
 
 }

@@ -48,8 +48,8 @@ private RecevivedMoneyService recevivedMoneyService;
         saleModel.setTotalAmmount(saleModel.getQuantity()*saleModel.getRate());
         saleModel.setRemaining((saleModel.getTotalAmmount()-saleModel.getReceivedAmmount()));
         StockItemModel stockItemModel=stockItemRepository.findByItemId(saleModel.getItem().getItemId());
-        saleModel.setProfit(saleModel.getTotalAmmount()-stockItemModel.getPurchasePrice()*saleModel.getQuantity());
-        saleModel.setGstInRupee((double) (saleModel.getTotalAmmount() * stockItemModel.getGstInPercent()) /100);
+        saleModel.setProfit((int) (saleModel.getTotalAmmount()-stockItemModel.getPurchasePrice()*saleModel.getQuantity()));
+        saleModel.setGstInRupee((double) (saleModel.getTotalAmmount() * stockItemModel.getGstPercentage()) /100);
          return  new ResponseEntity<SaleModel>(saleService.addSale(saleModel), HttpStatus.CREATED);
     }
 
@@ -60,8 +60,8 @@ private RecevivedMoneyService recevivedMoneyService;
             saleModel.setTotalAmmount(saleModel.getQuantity()*saleModel.getRate());
             saleModel.setRemaining((saleModel.getTotalAmmount()-saleModel.getReceivedAmmount()));
             StockItemModel stockItemModel=stockItemRepository.findByItemId(saleModel.getItem().getItemId());
-            saleModel.setProfit(saleModel.getTotalAmmount()-stockItemModel.getPurchasePrice()*saleModel.getQuantity());
-            saleModel.setGstInRupee((double) (saleModel.getTotalAmmount() * stockItemModel.getGstInPercent()) /100);
+            saleModel.setProfit((int) (saleModel.getTotalAmmount()-stockItemModel.getPurchasePrice()*saleModel.getQuantity()));
+            saleModel.setGstInRupee((double) (saleModel.getTotalAmmount() * stockItemModel.getGstPercentage()) /100);
         }
         saleRepository.saveAll(saleModels);
     }

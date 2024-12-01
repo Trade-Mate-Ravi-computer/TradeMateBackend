@@ -1,5 +1,6 @@
 package com.trademate.project.Controller;
 
+import com.trademate.project.DTO.CompanyDto;
 import com.trademate.project.DTO.MonthlySalesPurchasesDto;
 import com.trademate.project.DTO.ProductSalePurchaseDto;
 import com.trademate.project.Model.CompanyModel;
@@ -13,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -34,11 +36,32 @@ public class CompanyController {
         return companyService.adddCompany(company);
     }
     @GetMapping("/all/{userId}")
-    public List<CompanyModel> getAllByUser(@PathVariable long userId){
+    public List<CompanyDto> getAllByUser(@PathVariable long userId){
         UserModel userModel =new UserModel();
         userModel.setId(userId);
-        return companyService.getAllCompanyByUser(userModel);
+        List<CompanyModel> companyModels=companyService.getAllCompanyByUser(userModel);
+        return companyModels.stream()
+                .map(this::convertToDto) // Call a helper method to map the entity
+                .toList(); // Collect to a list
     }
+    private CompanyDto convertToDto(CompanyModel companyModel) {
+        CompanyDto companyDto = new CompanyDto();
+        companyDto.setCompanyId(companyModel.getCompanyId());
+        companyDto.setCompanyName(companyModel.getCompanyName());
+        companyDto.setCompanyAddress(companyModel.getCompanyAddress());
+        companyDto.setGstIn(companyModel.getGstIn());
+        companyDto.setGstType(companyModel.getGstType());
+        companyDto.setState(companyModel.getState());
+        companyDto.setDistrict(companyModel.getDistrict());
+        companyDto.setLocality(companyModel.getLocality());
+        companyDto.setCountry(companyModel.getCountry());
+        companyDto.setPinCode(companyModel.getPinCode());
+        companyDto.setMobile(companyModel.getMobile());
+        companyDto.setEmail(companyModel.getEmail());
+        companyDto.setImage(companyModel.getImage());
+        return companyDto;
+    }
+
 
     @GetMapping("/getCompanyBYId/{companyId}")
     public CompanyModel getCompamnyByCompanyId(@PathVariable long companyId){
@@ -102,4 +125,75 @@ public class CompanyController {
     public List<MonthlySalesPurchasesDto> getOCmpanyMonthlySalesPurchaseReport(@PathVariable long companyId){
         return companyRepository.findMonthlySalesAndPurchases(companyId);
 }
+
+    // Sales Reports
+    @GetMapping("/reports/sales/daily/{companyId}")
+    public List<Map<String, Object>> getDailySalesReport(@PathVariable Long companyId) {
+        return companyRepository.getDailySalesReport(companyId);
+    }
+
+    @GetMapping("/reports/sales/monthly/{companyId}")
+    public List<Map<String, Object>> getMonthlySalesReport(@PathVariable Long companyId) {
+        return companyRepository.getMonthlySalesReport(companyId);
+    }
+
+    @GetMapping("/reports/sales/customer-wise/{companyId}")
+    public List<Map<String, Object>> getCustomerWiseSalesReport(@PathVariable Long companyId) {
+        return companyRepository.getCustomerWiseSalesReport(companyId);
+    }
+
+    // Purchase Reports
+    @GetMapping("/reports/purchases/daily/{companyId}")
+    public List<Map<String, Object>> getDailyPurchaseReport(@PathVariable Long companyId) {
+        return companyRepository.getDailyPurchaseReport(companyId);
+    }
+
+    @GetMapping("/reports/purchases/monthly/{companyId}")
+    public List<Map<String, Object>> getMonthlyPurchaseReport(@PathVariable Long companyId) {
+        return companyRepository.getMonthlyPurchaseReport(companyId);
+    }
+
+    @GetMapping("/reports/purchases/vendor-wise/{companyId}")
+    public List<Map<String, Object>> getVendorWisePurchaseReport(@PathVariable Long companyId) {
+        return companyRepository.getSellerWisePurchaseReport(companyId);
+    }
+
+    // Inventory Reports
+    @GetMapping("/reports/stock/current/{companyId}")
+    public List<Object[]> getCurrentStockReport(@PathVariable Long companyId) {
+        return companyRepository.getCurrentStockReport(companyId);
+    }
+
+    @GetMapping("/reports/stock/product-wise-sales/{companyId}")
+    public List<Object[]> getProductWiseSalesReport(@PathVariable Long companyId) {
+        return companyRepository.getProductWiseSalesReport(companyId);
+    }
+
+    // Financial Reports
+    @GetMapping("/reports/financials/profit-loss/{companyId}")
+    public Map<String, Object> getProfitAndLossReport(@PathVariable Long companyId) {
+        return companyRepository.getProfitAndLossReport(companyId);
+    }
+
+    // Pending Payments Report
+    @GetMapping("/reports/payments/pending-customers/{companyId}")
+    public List<Object[]> getPendingPaymentsFromCustomers(@PathVariable Long companyId) {
+        return companyRepository.getPendingPaymentsFromCustomers(companyId);
+    }
+
+    @GetMapping("/reports/payments/pending-vendors/{companyId}")
+    public List<Map<String, Object>> getPendingPaymentsToVendors(@PathVariable Long companyId) {
+        return companyRepository.getPendingPaymentsToVendors(companyId);
+    }
+
+    // Expense Reports
+    @GetMapping("/reports/expenses/daily/{companyId}")
+    public List<Map<String, Object>> getDailyExpenseReport(@PathVariable Long companyId) {
+        return companyRepository.getDailyExpenseReport(companyId);
+    }
+
+    @GetMapping("/reports/expenses/monthly/{companyId}")
+    public List<Map<String, Object>> getMonthlyExpenseReport(@PathVariable Long companyId) {
+        return companyRepository.getMonthlyExpenseReport(companyId);
+    }
 }
