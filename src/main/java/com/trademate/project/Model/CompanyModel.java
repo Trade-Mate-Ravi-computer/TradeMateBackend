@@ -40,7 +40,8 @@ public class CompanyModel {
     private String bankName;
     private String accountNumber;
     private String ifscCode;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JsonIgnore // Prevents serialization of this field
     private UserModel user;
     @OneToMany(mappedBy = "company")
     @JsonIgnore
