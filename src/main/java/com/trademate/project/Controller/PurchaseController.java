@@ -5,6 +5,7 @@ import com.trademate.project.Model.PurchaseModel;
 import com.trademate.project.Model.StockItemModel;
 import com.trademate.project.Repository.CompanyRepository;
 import com.trademate.project.Repository.PurchaseRepository;
+import com.trademate.project.Repository.StockItemRepository;
 import com.trademate.project.Service.CompanyService;
 import com.trademate.project.Service.PurchaseService;
 import com.trademate.project.Service.SellerService;
@@ -32,6 +33,9 @@ private PurchaseRepository purchaseRepository;
 private SellerService sellerService;
 @Autowired
 private CompanyRepository companyRepository;
+@Autowired
+StockItemRepository stockItemRepository;
+
     @PostMapping("/add")
     public void addPurchase(@RequestBody List<PurchaseModel> purchases){
       for(int i=0;i<purchases.size();i++){
@@ -39,6 +43,10 @@ private CompanyRepository companyRepository;
           purchase.setTotalAmount(purchase.getQuantity()*purchase.getPrice());
           purchase.setRemaining(purchase.getTotalAmount()-purchase.getPaidAmount());
           purchase.setGstInRupee((double) (purchase.getTotalAmount() * 18) /100);
+          StockItemModel stockItemModel=stockItemRepository.findByItemId(purchase.getItem().getItemId());
+          stockItemModel.setQuantity(stockItemModel.getQuantity()+purchase.getQuantity());
+          stockItemModel.setPurchasePrice(purchase.getPrice());
+          stockItemRepository.save(stockItemModel);
 
       }
              purchaseRepository.saveAll(purchases);

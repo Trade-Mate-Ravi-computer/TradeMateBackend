@@ -1,6 +1,7 @@
 package com.trademate.project.Model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -40,11 +41,10 @@ public class CompanyModel {
     private String bankName;
     private String accountNumber;
     private String ifscCode;
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JsonIgnore // Prevents serialization of this field
+    @ManyToOne
     private UserModel user;
     @OneToMany(mappedBy = "company")
-    @JsonIgnore
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private List<SaleModel> sale;
     @OneToMany(mappedBy = "company")
     @JsonIgnore
@@ -64,5 +64,7 @@ public class CompanyModel {
     @OneToMany(mappedBy = "company")
     @JsonIgnore
     private List<ExpenseModel> expense;
+
+
 
 }

@@ -24,7 +24,7 @@ public class UserService {
         userModel.setPassword(passwordEncoder.encode(userModel.getPassword()));
         if(userRepository.findByEmail(userModel.getEmail())==null){
             String subject="Verify Your Email !";
-            String message="You are successfully registered On TradeMate \nClick the link to verify your account "+"\nVerification Link"+"\n\n "+"http://localhost:8080/auth/setverify/"+userModel.getEmail();
+            String message="You are successfully registered On TradeMate \nClick the link to verify your account "+"\nVerification Link"+"\n\n "+"https://backend.ravicomputer.online/auth/setverify/"+userModel.getEmail();
             emailService.sendEmail(userModel.getEmail(),subject,message);
         }
         return userRepository.save(userModel);

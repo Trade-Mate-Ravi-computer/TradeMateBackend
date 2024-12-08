@@ -17,6 +17,8 @@ public class StockItemService {
     private CompanyService companyService;
 
     public ResponseEntity<StockItemModel> addStock(StockItemModel item){
+
+
         return new ResponseEntity<StockItemModel>(stockItemRepository.save(item), HttpStatus.CREATED);
     }
     public List<StockItemModel> getAll(){

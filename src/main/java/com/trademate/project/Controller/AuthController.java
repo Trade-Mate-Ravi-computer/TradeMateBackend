@@ -68,8 +68,14 @@ private OrdersRepository ordersRepository;
  @PostMapping("/generate-otp")
  public String generateOtpForLogin(@RequestBody JwtRequest jwtRequest){
    doAuthenticate(jwtRequest.getEmail(),jwtRequest.getPassword());
-   generateOtp(jwtRequest.getEmail());
-   return "Otp Sent";
+  UserModel userModel=userRepository.findByEmail(jwtRequest.getEmail());
+  if(userModel.isVerified()){
+      generateOtp(jwtRequest.getEmail());
+      return "Otp Sent";
+  }else{
+      return "Your Email is not verified please verify then login";
+  }
+
  }
 
     public void generateOtp(String email) {

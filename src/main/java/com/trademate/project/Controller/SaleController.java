@@ -62,6 +62,8 @@ private RecevivedMoneyService recevivedMoneyService;
             StockItemModel stockItemModel=stockItemRepository.findByItemId(saleModel.getItem().getItemId());
             saleModel.setProfit((int) (saleModel.getTotalAmmount()-stockItemModel.getPurchasePrice()*saleModel.getQuantity()));
             saleModel.setGstInRupee((double) (saleModel.getTotalAmmount() * stockItemModel.getGstPercentage()) /100);
+            stockItemModel.setQuantity(stockItemModel.getQuantity()-saleModel.getQuantity());
+            stockItemRepository.save(stockItemModel);
         }
         saleRepository.saveAll(saleModels);
     }
