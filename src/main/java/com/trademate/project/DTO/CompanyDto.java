@@ -16,4 +16,7 @@ public class CompanyDto {
     private long mobile;
     private  String email;
     private String image;
+    private String bankName;
+    private String accountNumber;
+    private String ifscCode;
 }

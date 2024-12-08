@@ -8,6 +8,7 @@ import com.trademate.project.Model.UserModel;
 import com.trademate.project.Repository.CompanyRepository;
 import com.trademate.project.Service.CompanyService;
 import com.trademate.project.Service.UserService;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,6 +28,9 @@ public class CompanyController {
     private UserService userService;
     @Autowired
     private CompanyRepository companyRepository;
+
+    @Autowired
+    ModelMapper modelMapper;
 
 
     @PostMapping("/add")
@@ -64,8 +68,9 @@ public class CompanyController {
 
 
     @GetMapping("/getCompanyBYId/{companyId}")
-    public CompanyModel getCompamnyByCompanyId(@PathVariable long companyId){
-        return companyRepository.findByCompanyId(companyId);
+    public CompanyDto getCompamnyByCompanyId(@PathVariable long companyId){
+        CompanyModel companyModel =companyRepository.findByCompanyId(companyId);
+        return modelMapper.map(companyModel,CompanyDto.class);
     }
     @PutMapping("/update")
     public CompanyModel updateCompany(@RequestBody CompanyModel company){
@@ -105,7 +110,12 @@ public class CompanyController {
 
     @PostMapping("/updateImage")
     public ResponseEntity<?> updateImageAndAccountDetials(@RequestBody CompanyModel companyModel){
-        return  new ResponseEntity<>(companyRepository.save(companyModel), HttpStatus.ACCEPTED);
+        CompanyModel companyModel1=companyRepository.findByCompanyId(companyModel.getCompanyId());
+        companyModel1.setAccountNumber(companyModel.getAccountNumber());
+        companyModel1.setIfscCode(companyModel1.getIfscCode());
+        companyModel1.setBankName(companyModel.getBankName());
+        companyModel1.setImage(companyModel.getImage());
+        return  new ResponseEntity<>(companyRepository.save(companyModel1), HttpStatus.ACCEPTED);
     }
 
 
