@@ -74,11 +74,15 @@ public interface CompanyRepository extends JpaRepository<CompanyModel,Long> {
     @Query("SELECT s.date AS date, SUM(s.totalAmmount) AS totalSales FROM SaleModel s WHERE s.company.companyId = :companyId GROUP BY s.date")
     List<Map<String, Object>> getDailySalesReport(Long companyId);
 
-    @Query("SELECT DATE(s.date) AS date, SUM(s.totalAmmount) AS totalSales, SUM(s.profit) AS totalProfit " +
+    @Query("SELECT DATE(s.date) AS date, " +
+            "SUM(s.totalAmmount) AS totalSales, " +
+            "SUM(s.profit) AS totalProfit, " +
+            "SUM(s.remaining) AS totalRemaining " +
             "FROM SaleModel s " +
             "WHERE s.company.companyId = :companyId " +
             "GROUP BY DATE(s.date)")
-    List<Map<String, Object>> getDailySalesReportWithProfit(Long companyId);
+    List<Map<String, Object>> getDailySalesReportWithProfitAndRemaining(Long companyId);
+
 
 
     @Query("SELECT MONTH(s.date) AS month, YEAR(s.date) AS year, SUM(s.totalAmmount) AS totalSales FROM SaleModel s WHERE s.company.companyId = :companyId GROUP BY YEAR(s.date), MONTH(s.date)")

@@ -148,7 +148,7 @@ public class CompanyController {
 
     @GetMapping("/reports/sales-profit/daily/{companyId}")
     public List<Map<String, Object>> getDailySalesReportWithProfit(@PathVariable Long companyId) {
-        return companyRepository.getDailySalesReportWithProfit(companyId);
+        return companyRepository.getDailySalesReportWithProfitAndRemaining(companyId);
     }
 
 
