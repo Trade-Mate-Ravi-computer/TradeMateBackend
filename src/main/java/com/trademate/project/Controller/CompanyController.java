@@ -20,7 +20,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/company")
-@CrossOrigin(value = {"http://localhost:3000","https://ravicomputer.online/","https://trade-mate-fr-shadcn.vercel.app/"})
+@CrossOrigin(value = {"http://localhost:3000", "https://ravicomputer.online/", "https://trade-mate-fr-shadcn.vercel.app/"})
 public class CompanyController {
     @Autowired
     private CompanyService companyService;
@@ -34,20 +34,22 @@ public class CompanyController {
 
 
     @PostMapping("/add")
-    public ResponseEntity<CompanyModel> addCompany( @RequestBody CompanyModel company){
+    public ResponseEntity<CompanyModel> addCompany(@RequestBody CompanyModel company) {
         company.setCompanyName(company.getCompanyName().trim());
         System.out.println(company.getCompanyName().trim());
         return companyService.adddCompany(company);
     }
+
     @GetMapping("/all/{userId}")
-    public List<CompanyDto> getAllByUser(@PathVariable long userId){
-        UserModel userModel =new UserModel();
+    public List<CompanyDto> getAllByUser(@PathVariable long userId) {
+        UserModel userModel = new UserModel();
         userModel.setId(userId);
-        List<CompanyModel> companyModels=companyService.getAllCompanyByUser(userModel);
+        List<CompanyModel> companyModels = companyService.getAllCompanyByUser(userModel);
         return companyModels.stream()
                 .map(this::convertToDto) // Call a helper method to map the entity
                 .toList(); // Collect to a list
     }
+
     private CompanyDto convertToDto(CompanyModel companyModel) {
         CompanyDto companyDto = new CompanyDto();
         companyDto.setCompanyId(companyModel.getCompanyId());
@@ -68,54 +70,55 @@ public class CompanyController {
 
 
     @GetMapping("/getCompanyBYId/{companyId}")
-    public CompanyDto getCompamnyByCompanyId(@PathVariable long companyId){
-        CompanyModel companyModel =companyRepository.findByCompanyId(companyId);
-        return modelMapper.map(companyModel,CompanyDto.class);
+    public CompanyDto getCompamnyByCompanyId(@PathVariable long companyId) {
+        CompanyModel companyModel = companyRepository.findByCompanyId(companyId);
+        return modelMapper.map(companyModel, CompanyDto.class);
     }
+
     @PutMapping("/update")
-    public CompanyModel updateCompany(@RequestBody CompanyModel company){
+    public CompanyModel updateCompany(@RequestBody CompanyModel company) {
         CompanyModel existingCompany = companyRepository.findByCompanyId(company.getCompanyId());
-        if(company.getCompanyName().length()>1){
+        if (company.getCompanyName().length() > 1) {
             existingCompany.setCompanyName(company.getCompanyName());
         }
-        if(company.getCompanyAddress().length()>1){
+        if (company.getCompanyAddress().length() > 1) {
             existingCompany.setCompanyAddress(company.getCompanyAddress());
         }
-        if(company.getPinCode()>0){
+        if (company.getPinCode() > 0) {
             existingCompany.setPinCode(company.getPinCode());
         }
-        if(company.getMobile()>0){
+        if (company.getMobile() > 0) {
             existingCompany.setMobile(company.getMobile());
         }
-        if(company.getGstIn().length()>1){
+        if (company.getGstIn().length() > 1) {
             existingCompany.setGstIn(company.getGstIn());
         }
-        if(company.getGstType().length()>1){
+        if (company.getGstType().length() > 1) {
             existingCompany.setGstType(company.getGstType());
         }
-        if(company.getState().length()>1){
+        if (company.getState().length() > 1) {
             existingCompany.setState(company.getState());
         }
-        if(company.getCountry().length()>1){
+        if (company.getCountry().length() > 1) {
             existingCompany.setCountry(company.getCountry());
         }
-        if(company.getLocality().length()>1){
+        if (company.getLocality().length() > 1) {
             existingCompany.setLocality(company.getLocality());
         }
-        if(company.getDistrict().length()>1){
+        if (company.getDistrict().length() > 1) {
             existingCompany.setDistrict(company.getDistrict());
         }
         return companyRepository.save(existingCompany);
     }
 
     @PostMapping("/updateImage")
-    public ResponseEntity<?> updateImageAndAccountDetials(@RequestBody CompanyModel companyModel){
-        CompanyModel companyModel1=companyRepository.findByCompanyId(companyModel.getCompanyId());
+    public ResponseEntity<?> updateImageAndAccountDetials(@RequestBody CompanyModel companyModel) {
+        CompanyModel companyModel1 = companyRepository.findByCompanyId(companyModel.getCompanyId());
         companyModel1.setAccountNumber(companyModel.getAccountNumber());
         companyModel1.setIfscCode(companyModel1.getIfscCode());
         companyModel1.setBankName(companyModel.getBankName());
         companyModel1.setImage(companyModel.getImage());
-        return  new ResponseEntity<>(companyRepository.save(companyModel1), HttpStatus.ACCEPTED);
+        return new ResponseEntity<>(companyRepository.save(companyModel1), HttpStatus.ACCEPTED);
     }
 
 
@@ -123,24 +126,31 @@ public class CompanyController {
     @GetMapping("/report/weekly/{companyId}")
     public ResponseEntity<List<Object[]>> getWeeklyReport(@PathVariable long companyId) {
         System.out.println(companyId);
-       List<Object[]> weeklyReport = companyRepository.findAllSalesAndPurchases(companyId);
+        List<Object[]> weeklyReport = companyRepository.findAllSalesAndPurchases(companyId);
         return ResponseEntity.ok(weeklyReport);
     }
 
-@GetMapping("/getCompanyProductReport/{companyId}")
-    public List<ProductSalePurchaseDto> getProductReport(@PathVariable long companyId){
+    @GetMapping("/getCompanyProductReport/{companyId}")
+    public List<ProductSalePurchaseDto> getProductReport(@PathVariable long companyId) {
         return companyRepository.findDistinctProductSalesAndPurchases(companyId);
-}
-@GetMapping("/getCompanySalePurchaseAmount/{companyId}")
-    public List<MonthlySalesPurchasesDto> getOCmpanyMonthlySalesPurchaseReport(@PathVariable long companyId){
+    }
+
+    @GetMapping("/getCompanySalePurchaseAmount/{companyId}")
+    public List<MonthlySalesPurchasesDto> getOCmpanyMonthlySalesPurchaseReport(@PathVariable long companyId) {
         return companyRepository.findMonthlySalesAndPurchases(companyId);
-}
+    }
 
     // Sales Reports
     @GetMapping("/reports/sales/daily/{companyId}")
     public List<Map<String, Object>> getDailySalesReport(@PathVariable Long companyId) {
         return companyRepository.getDailySalesReport(companyId);
     }
+
+    @GetMapping("/reports/sales-profit/daily/{companyId}")
+    public List<Map<String, Object>> getDailySalesReportWithProfit(@PathVariable Long companyId) {
+        return companyRepository.getDailySalesReportWithProfit(companyId);
+    }
+
 
     @GetMapping("/reports/sales/monthly/{companyId}")
     public List<Map<String, Object>> getMonthlySalesReport(@PathVariable Long companyId) {
