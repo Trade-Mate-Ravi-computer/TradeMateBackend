@@ -69,8 +69,16 @@ private RecevivedMoneyService recevivedMoneyService;
     }
     @PostMapping("/allsaledetails")
     public List<SaleModel> getAllSale(@RequestBody CompanyModel company){
-        return saleRepository.findAllByCompany(company);
+        return saleRepository.findAllByCompanyOrderByDateDesc(company);
     }
+
+    @PostMapping("/allRemaining")
+    public List<SaleModel> getAllRemaining(@RequestBody CompanyModel company){
+        System.out.println("Remaing calling");
+        return saleRepository.findAllByCompanyAndRemainingGreaterThanOrderByDateDesc(company,0);
+    }
+
+
     @GetMapping("/{id}")
     public SaleModel getSaleById(@PathVariable long id){
         return saleService.getSaleById(id);

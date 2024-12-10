@@ -72,5 +72,7 @@ public interface SaleRepository extends JpaRepository<SaleModel, Long> {
     Map<String, Long> sumOfRemainingByDay(int month, int year, CompanyModel company, int day);
 
 
-    List<SaleModel> findAllByCompany(CompanyModel company);
+    List<SaleModel> findAllByCompanyOrderByDateDesc(CompanyModel company);
+
+ List<SaleModel> findAllByCompanyAndRemainingGreaterThanOrderByDateDesc(CompanyModel company, double remaining);
 }
