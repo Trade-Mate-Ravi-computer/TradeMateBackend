@@ -21,5 +21,13 @@ public class OrdersModel {
     private String status;
     @ManyToOne
     private UserModel user;
+    private String createDate;
+    private String currency;
+    private  String razorpay_payment_id;
+    private String razorpay_signature;
+    private String orderEmail;
+    private int numberOfAttempt;
+    private int durationInMonths;
+
 
 }

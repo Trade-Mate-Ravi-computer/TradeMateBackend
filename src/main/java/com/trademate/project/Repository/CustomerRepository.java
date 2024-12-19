@@ -10,4 +10,12 @@ import java.util.List;
 
 public interface CustomerRepository extends JpaRepository<CustomerModel,Long> {
     List<CustomerModel> findByCompany(CompanyModel company);
+    @Query("SELECT c.customerName AS name, SUM(s.totalAmmount) AS totalPurchases " +
+            "FROM CustomerModel c JOIN c.sales s " +
+            "WHERE c.company.id = :companyId " +
+            "GROUP BY c.customerName " +
+            "ORDER BY totalPurchases DESC")
+    List<Object[]> findTop5CustomersByCompany(@Param("companyId") Long companyId);
+
+
 }
