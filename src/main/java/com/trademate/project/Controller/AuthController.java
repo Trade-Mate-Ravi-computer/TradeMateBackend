@@ -33,7 +33,7 @@ import java.util.concurrent.TimeUnit;
 //import java.util.logging.Logger;
 
 @RestController
-@CrossOrigin(value = {"http://localhost:3000","https://ravicomputer.online/","https://trade-mate-fr-shadcn.vercel.app/"})
+@CrossOrigin(value = {"http://localhost:3000","https://trademate.ravicomputer.online/","https://trade-mate-fr-shadcn.vercel.app/"})
 @RequestMapping("/auth")
 public class AuthController {
  @Autowired
@@ -222,7 +222,7 @@ public List<FeedbackModel> getAll(){
   @PostMapping("/create_order")
     public  String createOrder(@RequestBody Map<String,Object> order) throws RazorpayException {
       int amt = Integer.parseInt(order.get("amount").toString());
-      var client = new RazorpayClient("rzp_test_daKBtgff3GpV4I", "Szf9Sb91O1eDFyyMHgV1aDoM");
+      var client = new RazorpayClient("rzp_test_BK3KSXeGUlGCaD", "fP4JC3Ohnw4aHn5AMZSgTEs8");
       JSONObject ob = new JSONObject();
       ob.put("amount", amt * 100);
       ob.put("currency", "INR");
@@ -234,19 +234,44 @@ public List<FeedbackModel> getAll(){
       ordersModel.setOrderId(orders.get("id"));
       ordersModel.setStatus("created");
       ordersModel.setAmount((orders.get("amount")).toString());
+      ordersModel.setDurationInMonths(Integer.parseInt(order.get("durationInMonths").toString()));
       ordersModel.setReceipt(orders.get("receipt"));
       ordersRepository.save(ordersModel);
       return orders.toString();
   }
   @PostMapping("/updateOrder")
-    public void updateOrder(@RequestBody Map<String,String> orderStatus){
-    OrdersModel order = ordersRepository.findByOrderId(orderStatus.get("order_id"));
-    order.setStatus(orderStatus.get("status"));
+    public void updateOrder(@RequestBody OrdersModel orderModel){
+    OrdersModel order = ordersRepository.findByOrderId(orderModel.getOrderId());
     ordersRepository.save(order);
-    UserModel user = userRepository.findByEmail(orderStatus.get("email"));
-    user.setRemainingDays((Math.max(user.getRemainingDays(), 0))+Integer.parseInt(orderStatus.get("days")));
-    user.setExpDate(user.getExpDate().plusDays(Integer.parseInt(orderStatus.get("days"))));
+    UserModel user = userRepository.findByEmail(orderModel.getOrderEmail());
+    order.setOrderEmail(orderModel.getOrderEmail());
+    order.setCreateDate(orderModel.getCreateDate());
+    order.setCurrency(orderModel.getCurrency());
+    ordersRepository.save(order);
     userRepository.save(user);
+    }
+
+    @PostMapping("/failedPayment")
+    public void updateFailedPayemnt(@RequestBody OrdersModel ordersModel){
+        OrdersModel order = ordersRepository.findByOrderId(ordersModel.getOrderId());
+        order.setStatus(order.getStatus());
+        order.setNumberOfAttempt(order.getNumberOfAttempt()+1);
+        ordersRepository.save(order);
+    }
+
+    @PostMapping("/successOrder")
+    public void updateSuccessPayments(@RequestBody OrdersModel ordersModel){
+    OrdersModel ordersModel1 =ordersRepository.findByOrderId(ordersModel.getOrderId());
+    ordersModel1.setRazorpay_payment_id(ordersModel.getRazorpay_payment_id());
+    ordersModel1.setNumberOfAttempt(ordersModel1.getNumberOfAttempt()+1);
+    ordersModel1.setRazorpay_signature(ordersModel.getRazorpay_signature());
+    ordersModel1.setStatus("Paid");
+    ordersRepository.save(ordersModel1);
+    UserModel userModel=userRepository.findByEmail(ordersModel1.getOrderEmail());
+    userModel.setExpDate(userModel.getExpDate().plusDays(ordersModel1.getDurationInMonths()* 30L));
+    userModel.setRemainingDays(userModel.getRemainingDays()>0?userModel.getRemainingDays()+ordersModel1.getDurationInMonths()*30:ordersModel1.getDurationInMonths()*30);
+   userModel.setSubDate(LocalDate.now());
+    userRepository.save(userModel);
     }
   @GetMapping("/setSubscription/{email}")
     public String setSubscription(@PathVariable String email){

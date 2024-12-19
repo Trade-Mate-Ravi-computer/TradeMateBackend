@@ -14,7 +14,7 @@ import java.time.LocalDate;
 import java.util.*;
 
 @RestController
-@CrossOrigin(value = {"http://localhost:3000","https://ravicomputer.online/","https://trade-mate-fr-shadcn.vercel.app/"})
+@CrossOrigin(value = {"http://localhost:3000","https://trademate.ravicomputer.online/","https://trade-mate-fr-shadcn.vercel.app/"})
 @RequestMapping("/sales")
 public class SaleController {
     private SaleService saleService;

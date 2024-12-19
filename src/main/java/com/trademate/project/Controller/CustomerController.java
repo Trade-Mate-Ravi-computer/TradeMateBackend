@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@CrossOrigin(value = {"http://localhost:3000","https://ravicomputer.online/","https://trade-mate-fr-shadcn.vercel.app/"})
+@CrossOrigin(value = {"http://localhost:3000","https://trademate.ravicomputer.online/","https://trade-mate-fr-shadcn.vercel.app/"})
 @RequestMapping("/customer")
 public class CustomerController {
     @Autowired
@@ -36,6 +36,11 @@ public class CustomerController {
         CompanyModel companyModel = new CompanyModel();
         companyModel.setCompanyId(companyId);
         return customerRepository.findByCompany(companyModel);
+    }
+
+    @GetMapping("/getTop5customer/{companyId}")
+    public List<Object[]> getTop5Customers(@PathVariable long companyId) {
+        return customerRepository.findTop5CustomersByCompany(companyId);
     }
 
 }
