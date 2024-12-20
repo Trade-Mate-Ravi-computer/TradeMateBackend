@@ -1,6 +1,8 @@
 package com.trademate.project.Controller;
 
+import com.trademate.project.DTO.CustomerDto;
 import com.trademate.project.DTO.InvoiceDto;
+import com.trademate.project.DTO.SaleDTO;
 import com.trademate.project.Model.*;
 import com.trademate.project.Repository.*;
 import com.trademate.project.Service.*;
@@ -68,8 +70,8 @@ private RecevivedMoneyService recevivedMoneyService;
         saleRepository.saveAll(saleModels);
     }
     @PostMapping("/allsaledetails")
-    public List<SaleModel> getAllSale(@RequestBody CompanyModel company){
-        return saleRepository.findAllByCompanyOrderByDateDesc(company);
+    public List<SaleDTO> getAllSale(@RequestBody CompanyModel company){
+        return saleRepository.findAllSalesByCompanyId(company.getCompanyId());
     }
 
     @PostMapping("/allRemaining")
@@ -139,15 +141,14 @@ private RecevivedMoneyService recevivedMoneyService;
     }
     @PostMapping("/byid/{id}")
     public InvoiceDto findById(@PathVariable long id){
-        SaleModel saleModel =saleRepository.findById(id).get();
+        SaleDTO saleModel =saleRepository.findSaleById(id);
         InvoiceDto invoiceDto=new InvoiceDto();
-        CustomerModel customerModel =saleModel.getCustomer();
+        CustomerDto customerModel =saleModel.getCustomer();
         invoiceDto.setCustomerModel(customerModel);
-        List<SaleModel> saleModels = saleService.grtById(id);
+        List<SaleDTO> saleModels = saleService.getById(id);
         Double totalAmount = (double) 0;
         for(int i=0;i<saleModels.size();i++){
             saleModels.get(i).setCustomer(null);
-            saleModels.get(i).setCompany(null);
             totalAmount+=saleModels.get(i).getTotalAmmount();
         }
           invoiceDto.setSales(saleModels);

@@ -1,5 +1,6 @@
 package com.trademate.project.Service;
 
+import com.trademate.project.DTO.SaleDTO;
 import com.trademate.project.Model.*;
 import com.trademate.project.Repository.CompanyRepository;
 import com.trademate.project.Repository.SaleRepository;
@@ -69,10 +70,9 @@ public class SaleService {
     public List<SaleModel> salesWithRemainingBalance(){
         return saleRepository.salesWithRemainingBalance();
     }
-    public List<SaleModel> grtById(long id){
-       SaleModel sale = saleRepository.findById(id).get();
-        System.out.println(sale.getDate().toString());
-        return saleRepository.findByCustomerAndDate(sale.getCustomer(),sale.getDate());
+    public List<SaleDTO> getById(long id){
+        SaleDTO sale = saleRepository.findSaleById(id);
+        return saleRepository.findSalesByCustomerIdAndDate(sale.getCustomer().getId(),sale.getDate());
     }
     public  int totalAmmountOfQuarter(QuarterMonthModel monthModel){
         CompanyModel company =new CompanyModel();

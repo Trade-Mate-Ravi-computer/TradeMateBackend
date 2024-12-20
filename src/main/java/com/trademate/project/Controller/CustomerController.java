@@ -35,7 +35,12 @@ public class CustomerController {
     public List<CustomerModel> getAll(@PathVariable long companyId){
         CompanyModel companyModel = new CompanyModel();
         companyModel.setCompanyId(companyId);
-        return customerRepository.findByCompany(companyModel);
+
+        List<CustomerModel> customers =customerRepository.findByCompany(companyModel);
+        for(int i=0;i<customers.size();i++){
+            customers.get(i).setCompany(null);
+        }
+        return customers;
     }
 
     @GetMapping("/getTop5customer/{companyId}")
