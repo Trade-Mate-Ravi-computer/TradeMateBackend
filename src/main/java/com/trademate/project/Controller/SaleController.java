@@ -76,8 +76,13 @@ private RecevivedMoneyService recevivedMoneyService;
 
     @PostMapping("/allRemaining")
     public List<SaleModel> getAllRemaining(@RequestBody CompanyModel company){
-        System.out.println("Remaing calling");
-        return saleRepository.findAllByCompanyAndRemainingGreaterThanOrderByDateDesc(company,0);
+        List<SaleModel> saleModels =saleRepository.findAllByCompanyAndRemainingGreaterThanOrderByDateDesc(company,0);
+        for(SaleModel saleModel :saleModels){
+            saleModel.setCompany(null);
+            saleModel.getItem().setCompany(null);
+            saleModel.getCustomer().setCompany(null);
+        }
+        return saleModels;
     }
 
 

@@ -7,6 +7,7 @@ import com.trademate.project.Repository.*;
 import com.trademate.project.Security.JwtHelper;
 import com.trademate.project.Service.EmailService;
 import com.trademate.project.Service.UserService;
+import jakarta.transaction.Transactional;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -219,8 +220,9 @@ public List<FeedbackModel> getAll(){
       return "Credential Invalid";
   }
 
+  @Transactional
   @PostMapping("/create_order")
-    public  String createOrder(@RequestBody Map<String,Object> order) throws RazorpayException {
+  public  String createOrder(@RequestBody Map<String,Object> order) throws RazorpayException {
       int amt = Integer.parseInt(order.get("amount").toString());
       var client = new RazorpayClient("rzp_test_BK3KSXeGUlGCaD", "fP4JC3Ohnw4aHn5AMZSgTEs8");
       JSONObject ob = new JSONObject();
@@ -229,6 +231,7 @@ public List<FeedbackModel> getAll(){
       ob.put("receipt", "txn_235425");
       //creating order
       Order orders = client.orders.create(ob);
+      System.out.println(orders.toString());
       OrdersModel ordersModel = new OrdersModel();
       ordersModel.setUser(userRepository.findByEmail(order.get("email").toString()));
       ordersModel.setOrderId(orders.get("id"));
