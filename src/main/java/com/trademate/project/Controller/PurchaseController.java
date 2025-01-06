@@ -1,5 +1,6 @@
 package com.trademate.project.Controller;
 
+import com.trademate.project.DTO.PurchaseDto;
 import com.trademate.project.Model.CompanyModel;
 import com.trademate.project.Model.PurchaseModel;
 import com.trademate.project.Model.StockItemModel;
@@ -52,9 +53,8 @@ StockItemRepository stockItemRepository;
              purchaseRepository.saveAll(purchases);
     }
     @GetMapping("/getbycompany/{companyId}")
-    public List<PurchaseModel> getByCompany(@PathVariable long companyId){
-        CompanyModel company =companyRepository.findByCompanyId(companyId);
-        return purchaseRepository.findAllByCompany(company);
+    public List<PurchaseDto> getByCompany(@PathVariable long companyId){
+        return purchaseRepository.findAllPurchasesByCompanyId(companyId);
     }
     @PostMapping("/update")
     public String updateById(@RequestBody PurchaseModel purchase){

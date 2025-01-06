@@ -7,6 +7,7 @@ import com.trademate.project.Repository.*;
 import com.trademate.project.Security.JwtHelper;
 import com.trademate.project.Service.EmailService;
 import com.trademate.project.Service.UserService;
+import jakarta.transaction.Transactional;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -95,7 +96,7 @@ private OrdersRepository ordersRepository;
  @PostMapping("/login")
  public ResponseEntity<?> login(@RequestBody JwtRequest jwtRequest){
      String validation =validateOtp(jwtRequest);
-     if(validation=="Otp Validation Successful"){
+//     if(validation=="Otp Validation Successful"){
          UserDetails userDetails = userDetailsService.loadUserByUsername(jwtRequest.getEmail());
          String token =this.jwtHelper.generateToken(userDetails);
          JwtResponse response = JwtResponse.builder().jwtToken(token).userNAme(userDetails.getUsername()).build();
@@ -103,9 +104,10 @@ private OrdersRepository ordersRepository;
          response.setName(user.getName());
          response.setUserId(user.getId());
          return new ResponseEntity<>(response, HttpStatus.OK);
-     }else {
-         return ResponseEntity.ok(validation);
-     }
+//     }
+//     else {
+//         return ResponseEntity.ok(validation);
+//     }
  }
 
     public String validateOtp(@RequestBody JwtRequest jwtRequest) {
@@ -219,8 +221,9 @@ public List<FeedbackModel> getAll(){
       return "Credential Invalid";
   }
 
+  @Transactional
   @PostMapping("/create_order")
-    public  String createOrder(@RequestBody Map<String,Object> order) throws RazorpayException {
+  public  String createOrder(@RequestBody Map<String,Object> order) throws RazorpayException {
       int amt = Integer.parseInt(order.get("amount").toString());
       var client = new RazorpayClient("rzp_test_BK3KSXeGUlGCaD", "fP4JC3Ohnw4aHn5AMZSgTEs8");
       JSONObject ob = new JSONObject();
@@ -229,6 +232,7 @@ public List<FeedbackModel> getAll(){
       ob.put("receipt", "txn_235425");
       //creating order
       Order orders = client.orders.create(ob);
+      System.out.println(orders.toString());
       OrdersModel ordersModel = new OrdersModel();
       ordersModel.setUser(userRepository.findByEmail(order.get("email").toString()));
       ordersModel.setOrderId(orders.get("id"));

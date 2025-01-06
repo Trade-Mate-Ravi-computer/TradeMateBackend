@@ -14,8 +14,8 @@ import java.util.List;
 @NoArgsConstructor
 @Data
 public class InvoiceDto {
-    private CustomerModel customerModel;
-    private List<SaleModel> sales;
+    private CustomerDto customerModel;
+    private List<SaleDTO> sales;
     private double totalAmount;
 
 }

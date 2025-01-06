@@ -38,6 +38,10 @@ public class SellerContorller {
     public List<SellerModel> getAll(@PathVariable long companyId) {
         CompanyModel companyModel =new CompanyModel();
          companyModel.setCompanyId(companyId);
-         return sellerRepository.findByCompany(companyModel);
+         List<SellerModel> sellers =sellerRepository.findByCompany(companyModel);
+         for(SellerModel sellerModel :sellers){
+             sellerModel.setCompany(null);
+         }
+         return sellers;
     }
 }

@@ -31,7 +31,11 @@ public class StockItemController {
     @GetMapping("/all/{companyId}")
     public List<StockItemModel> getAllByCompanyName(@PathVariable long companyId) {
         CompanyModel company = companyRepository.findByCompanyId(companyId);
-        return repository.findByCompany(company);
+        List<StockItemModel> stockItems =repository.findByCompany(company);
+        for(int i=0;i<stockItems.size();i++){
+            stockItems.get(i).setCompany(null);
+        }
+        return stockItems;
     }
 
     @PutMapping("/updateStock")
