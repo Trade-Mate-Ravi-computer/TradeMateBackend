@@ -34,7 +34,7 @@ import java.util.concurrent.TimeUnit;
 //import java.util.logging.Logger;
 
 @RestController
-@CrossOrigin(value = {"http://localhost:3000","https://trademate.ravicomputer.online/","https://trade-mate-fr-shadcn.vercel.app/"})
+@CrossOrigin(value = {"http://localhost:3000","http://localhost:8081","https://trademate.ravicomputer.online/","https://trade-mate-fr-shadcn.vercel.app/"})
 @RequestMapping("/auth")
 public class AuthController {
  @Autowired
@@ -96,7 +96,7 @@ private OrdersRepository ordersRepository;
  @PostMapping("/login")
  public ResponseEntity<?> login(@RequestBody JwtRequest jwtRequest){
      String validation =validateOtp(jwtRequest);
-//     if(validation=="Otp Validation Successful"){
+     if(validation=="Otp Validation Successful"){
          UserDetails userDetails = userDetailsService.loadUserByUsername(jwtRequest.getEmail());
          String token =this.jwtHelper.generateToken(userDetails);
          JwtResponse response = JwtResponse.builder().jwtToken(token).userNAme(userDetails.getUsername()).build();
@@ -104,10 +104,10 @@ private OrdersRepository ordersRepository;
          response.setName(user.getName());
          response.setUserId(user.getId());
          return new ResponseEntity<>(response, HttpStatus.OK);
-//     }
-//     else {
-//         return ResponseEntity.ok(validation);
-//     }
+     }
+     else {
+         return ResponseEntity.ok(validation);
+     }
  }
 
     public String validateOtp(@RequestBody JwtRequest jwtRequest) {
