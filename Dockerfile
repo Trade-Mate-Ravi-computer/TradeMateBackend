@@ -1,26 +1,26 @@
-# Use the official Maven image from the Docker Hub as the base image for the build stage
+# Build stage
 FROM maven:3.8.5-openjdk-17 AS build
 
-# Set the working directory
+# Set working directory
 WORKDIR /app
 
-# Copy the entire project to the container
+# Copy project files
 COPY . .
 
-# Run Maven package command to build the project and skip the tests
+# Build the project
 RUN mvn clean package -DskipTests
 
-# Use the official OpenJDK image as the base image for the runtime stage
-FROM openjdk:17-jdk-slim
+# Runtime stage (FIXED IMAGE)
+FROM eclipse-temurin:17-jdk
 
-# Set the working directory
+# Set working directory
 WORKDIR /app
 
-# Copy the JAR file from the build stage to the runtime stage
-COPY --from=build /app/target/trademate-0.0.1-SNAPSHOT.jar trademate.jar
+# Copy JAR from build stage
+COPY --from=build /app/target/trademate-0.0.1-SNAPSHOT.jar app.jar
 
-# Expose the port the application will run on
+# Expose port
 EXPOSE 8080
 
-# Set the entry point to run the JAR file
-ENTRYPOINT ["java", "-jar", "/app/trademate.jar"]
+# Run the application
+ENTRYPOINT ["java", "-jar", "app.jar"]
