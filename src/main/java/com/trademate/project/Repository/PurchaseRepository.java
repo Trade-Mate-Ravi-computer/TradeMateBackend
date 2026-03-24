@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Map;
 
 public interface PurchaseRepository extends JpaRepository<PurchaseModel,Long> {
 //@Query("select p from PurchaseModel where companyName=?1")
@@ -33,5 +34,13 @@ public interface PurchaseRepository extends JpaRepository<PurchaseModel,Long> {
             "FROM PurchaseModel p " +
             "WHERE p.company.id = :companyId")
     List<PurchaseDto> findAllPurchasesByCompanyId(@Param("companyId") Long companyId);
+
+    @Query("SELECT DATE(p.date) AS date, " +
+            "SUM(p.totalAmount / 1.18) AS purchaseWithoutGst, " +
+            "SUM(p.totalAmount - (p.totalAmount / 1.18)) AS inputGst " +
+            "FROM PurchaseModel p " +
+            "WHERE p.company.companyId = :companyId " +
+            "GROUP BY DATE(p.date)")
+    List<Map<String, Object>> getDailyPurchaseWithInputGst(Long companyId);
 
 }

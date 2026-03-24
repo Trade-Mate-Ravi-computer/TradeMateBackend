@@ -76,7 +76,7 @@ public interface CompanyRepository extends JpaRepository<CompanyModel,Long> {
 
     @Query("SELECT DATE(s.date) AS date, " +
             "SUM(s.totalAmmount) AS totalSales, " +
-            "SUM(s.profit) AS totalProfit, " +
+            "SUM(s.profit / 1.18) AS totalProfit, " +
             "SUM(s.remaining) AS totalRemaining " +
             "FROM SaleModel s " +
             "WHERE s.company.companyId = :companyId " +

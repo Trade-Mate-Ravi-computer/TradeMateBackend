@@ -34,7 +34,7 @@ import java.util.concurrent.TimeUnit;
 //import java.util.logging.Logger;
 
 @RestController
-@CrossOrigin(value = {"http://localhost:3000","http://localhost:8081","https://trademate.ravicomputer.online/","https://trade-mate-fr-shadcn.vercel.app/"})
+@CrossOrigin(value = {"http://localhost:3000","https://tradematefr.mauryaravi599.workers.dev","https://trademate.ravicomputer.online/","https://trade-mate-fr-shadcn.vercel.app/"})
 @RequestMapping("/auth")
 public class AuthController {
  @Autowired

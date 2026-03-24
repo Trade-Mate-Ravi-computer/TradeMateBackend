@@ -157,7 +157,12 @@ public interface SaleRepository extends JpaRepository<SaleModel, Long> {
             @Param("saleDate") LocalDate saleDate);
 
 
-
+    @Query("SELECT DATE(s.date) AS date, " +
+            "SUM(s.totalAmmount - (s.totalAmmount / 1.18)) AS outputGst " +
+            "FROM SaleModel s " +
+            "WHERE s.company.companyId = :companyId " +
+            "GROUP BY DATE(s.date)")
+    List<Map<String, Object>> getDailyOutputGst(Long companyId);
 
 
 }

@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@CrossOrigin(value = {"http://localhost:3000","https://trademate.ravicomputer.online/","https://trade-mate-fr-shadcn.vercel.app/"})
+@CrossOrigin(value = {"http://localhost:3000","https://tradematefr.mauryaravi599.workers.dev","https://trademate.ravicomputer.online/","https://trade-mate-fr-shadcn.vercel.app/"})
 @RequestMapping("/customer")
 public class CustomerController {
     @Autowired

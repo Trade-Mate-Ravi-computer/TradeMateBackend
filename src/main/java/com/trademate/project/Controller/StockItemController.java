@@ -14,7 +14,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/stock")
-@CrossOrigin(value = {"http://localhost:3000", "https://trademate.ravicomputer.online/", "https://trade-mate-fr-shadcn.vercel.app/"})
+@CrossOrigin(value = {"http://localhost:3000","https://tradematefr.mauryaravi599.workers.dev", "https://trademate.ravicomputer.online/", "https://trade-mate-fr-shadcn.vercel.app/"})
 public class StockItemController {
     @Autowired
     private StockItemService service;
